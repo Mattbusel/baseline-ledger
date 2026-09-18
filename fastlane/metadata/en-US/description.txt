@@ -1,0 +1,36 @@
+Baseline Ledger is a tennis practice journal and match stat book, finished in black and gold.
+
+Track your hitting sessions shot by shot, chart where your serves land, keep a proper record of every match, and let the numbers tell you what to work on.
+
+ON COURT
+• Forehand, backhand, serve, return, volley, overhead, slice, drop shot or point play
+• Pick a pattern: crosscourt, down the line, inside-out, inside-in, deep middle, live ball, basket feed
+• Tap each ball: in, winner, or error into the net, long, wide or off the frame
+• Rally counter: tap each shot, see your longest rally
+• Serves: tap where the ball landed in the service box (wide, body or T) on the deuce or ad side, first or second serve; log aces and faults
+• Undo any tap
+
+YOUR JOURNAL
+• Rate the session, your mood and energy
+• Hitting partner, cue, what clicked, what to work on, and free notes
+• Search every entry, filter by stroke
+
+MATCHES
+• Set scores with tiebreaks, opponent and their level, event, surface, singles or doubles
+• First serve %, points won on first and second serve, aces and double faults
+• Break points won and saved, winners vs unforced errors, net points
+• Game plan, what worked and what didn't
+
+STATS
+• Match record, win streak and win rate by surface
+• First serve % over time, winners vs errors per match
+• Where your serves land on each side
+• In-play % by stroke and how you tend to miss, with advice
+• Where your court time goes
+
+GEAR
+• Racquets with string, tension and date strung
+• Hours on the current strings, added automatically from your sessions, and a nudge when it's time to restring
+• String log history
+
+Goals, a weekly court-time target and streaks keep you honest. No account, no ads, no tracking: everything stays on your phone.
