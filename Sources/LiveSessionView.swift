@@ -61,6 +61,23 @@ struct LiveSessionView: View {
             Button("Discard session", role: .destructive) { dismiss() }
             Button("Keep going", role: .cancel) {}
         }
+        .onCue(autopilot)
+    }
+
+    /// App Review recording: the same actions the buttons below perform.
+    private func autopilot(_ cue: String) {
+        switch cue {
+        case "live.in": record { $0.made += 1 }
+        case "live.winner", "live.ace": record { $0.winners += 1 }
+        case "live.net": record { $0.errors[.net, default: 0] += 1 }
+        case "live.long", "live.fault": record { $0.errors[.long, default: 0] += 1 }
+        case "live.serve": withAnimation(.snappy) { stroke = .serve }
+        case "live.zoneT": record { $0.made += 1; $0.zones[.t, default: 0] += 1 }
+        case "live.zoneWide": record { $0.made += 1; $0.zones[.wide, default: 0] += 1 }
+        case "live.zoneBody": record { $0.made += 1; $0.zones[.body, default: 0] += 1 }
+        case "live.finish": finish()
+        default: break
+        }
     }
 
     private var topBar: some View {

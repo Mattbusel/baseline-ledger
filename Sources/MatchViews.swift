@@ -191,6 +191,19 @@ struct MatchEditorView: View {
                 .padding(.horizontal, 20).padding(.vertical, 16).padding(.bottom, 30)
             }
         }
+        .onCue { cue in
+            withAnimation(.snappy) {
+                switch cue {
+                case "match.opponent": match.opponent = "J. Okafor"; match.event = "Club ladder"
+                case "match.set1": match.sets = [SetScore(me: 6, them: 4)]
+                case "match.set2": match.sets.append(SetScore(me: 7, them: 5))
+                case "match.serve": match.aces = 4; match.doubleFaults = 2; match.firstServesIn = 38; match.firstServesTotal = 61
+                case "match.worked": match.whatWorked = "Serving to the backhand on big points."
+                case "match.save": ledger.upsert(match); Haptic.done(); dismiss()
+                default: break
+                }
+            }
+        }
     }
 
     private var line: some View { Rectangle().fill(Gold.leaf.opacity(0.1)).frame(height: 0.8) }
