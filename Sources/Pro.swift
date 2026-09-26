@@ -170,10 +170,8 @@ extension Ledger {
         }
         let a = dir.appendingPathComponent("Baseline Ledger matches \(day).csv")
         let b = dir.appendingPathComponent("Baseline Ledger practice \(day).csv")
-        try? m.joined(separator: "
-").write(to: a, atomically: true, encoding: .utf8)
-        try? s.joined(separator: "
-").write(to: b, atomically: true, encoding: .utf8)
+        try? m.joined(separator: "\n").write(to: a, atomically: true, encoding: .utf8)
+        try? s.joined(separator: "\n").write(to: b, atomically: true, encoding: .utf8)
         return [a, b]
     }
 }
