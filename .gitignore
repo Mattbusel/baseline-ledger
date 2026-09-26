@@ -2,3 +2,4 @@
 dd/
 shots/
 .DS_Store
+__pycache__/

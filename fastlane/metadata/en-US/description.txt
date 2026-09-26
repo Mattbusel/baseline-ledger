@@ -1,4 +1,4 @@
-Baseline Ledger is a tennis practice journal and match stat book, finished in black and gold.
+Baseline Ledger is a tennis practice journal and match stat book, finished in black and gold. Free to download, free to log, with one optional Pro unlock.
 
 Track your hitting sessions shot by shot, chart where your serves land, keep a proper record of every match, and let the numbers tell you what to work on.
 
@@ -22,15 +22,20 @@ MATCHES
 • Game plan, what worked and what didn't
 
 STATS
-• Match record, win streak and win rate by surface
+• First serve %, serve points won, break points and double faults over your last ten matches
+
+BASELINE LEDGER PRO (one-time purchase, no subscription)
+• Win rate by surface
 • First serve % over time, winners vs errors per match
 • Where your serves land on each side
 • In-play % by stroke and how you tend to miss, with advice
 • Where your court time goes
+• Track as many racquets as you carry (one is free)
+• Export your matches and practice sessions as spreadsheet files
 
 GEAR
 • Racquets with string, tension and date strung
 • Hours on the current strings, added automatically from your sessions, and a nudge when it's time to restring
 • String log history
 
-Goals, a weekly court-time target and streaks keep you honest. No account, no ads, no tracking: everything stays on your phone.
+Goals, a weekly court-time target and streaks keep you honest. Practice logging, the journal, match logging and one racquet are free forever. Pro is one payment, never a subscription, and Family Sharing works. No account, no ads, no tracking: everything stays on your phone.

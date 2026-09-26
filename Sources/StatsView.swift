@@ -3,6 +3,7 @@ import Charts
 
 struct StatsView: View {
     @Environment(Ledger.self) private var ledger
+    @Environment(Pro.self) private var pro
 
     var body: some View {
         Page {
@@ -11,19 +12,46 @@ struct StatsView: View {
                 Text("Charts appear once you have a few sessions or matches in the ledger.")
                     .font(.display(17)).foregroundStyle(Gold.muted).card()
             }
-            if !ledger.matches.isEmpty {
-                matchAverages
-                firstServeTrend
-                winnersVsErrors
-                bySurface
+            // The last-ten averages are free; the stat book below them is Pro.
+            if !ledger.matches.isEmpty { matchAverages }
+            if pro.unlocked {
+                statBook
+            } else {
+                LockedSection(reason: .stats, title: "The full stat book",
+                              pitch: "Serve trends, winners against errors, results by surface, where your serves land and how each stroke holds up, all from what you have logged.") {
+                    if ledger.matches.isEmpty && ledger.sessions.isEmpty { sampleCard } else { statBook }
+                }
             }
-            if !ledger.blocks(.serve).isEmpty { servePlacement }
-            if !ledger.allBlocks.isEmpty {
-                strokeConsistency
-                errorMix
-                practiceMix
-            }
+            ExportCard()
         }
+    }
+
+    @ViewBuilder private var statBook: some View {
+        if !ledger.matches.isEmpty {
+            firstServeTrend
+            winnersVsErrors
+            bySurface
+        }
+        if !ledger.blocks(.serve).isEmpty { servePlacement }
+        if !ledger.allBlocks.isEmpty {
+            strokeConsistency
+            errorMix
+            practiceMix
+        }
+    }
+
+    /// Something to frost when the ledger is still empty.
+    private var sampleCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Eyebrow("First serve %")
+            Chart(Array([52, 55, 51, 58, 56, 60, 57, 62].enumerated()), id: \.offset) { item in
+                LineMark(x: .value("Match", item.offset), y: .value("First serve", item.element))
+                    .foregroundStyle(Gold.foil).interpolationMethod(.monotone)
+            }
+            .chartXAxis(.hidden).chartYAxis(.hidden)
+            .frame(height: 190)
+        }
+        .card()
     }
 
     private var matchAverages: some View {

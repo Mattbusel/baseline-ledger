@@ -6,6 +6,8 @@ No account, login or network connection is required.
 
 HOW TO USE: The Home tab shows a summary. Tap "Start hitting" to open the live court screen: choose a stroke and pattern, then tap In / Winner / an error type for each ball. For serves, choose Deuce/Ad and 1st/2nd and tap the zone of the service box where the ball landed. Tap "Finish & journal" to rate the session and write notes, then "Save to ledger". "Log match" opens the match sheet (tap a set score to change it). The Journal, Matches, Stats and Gear tabs show saved data. A new install starts empty.
 
+IN-APP PURCHASE: the app is free. One non-consumable in-app purchase, "Baseline Ledger Pro" (com.mattbusel.baselineledger.pro), unlocks the full stat book on the Stats tab (first serve trend, winners and errors, results by surface, serve placement, stroke consistency, error mix, practice mix), tracking more than one racquet on the Gear tab, and spreadsheet export. Practice logging, the journal, match logging, goals, one racquet and the last-ten-matches averages are free. To see the paywall: open the Stats tab and tap "See Baseline Ledger Pro", or add one racquet on the Gear tab and tap + again, or tap the lock on the "Export the ledger" card at the bottom of the Stats tab, or tap SEE on the Pro card at the bottom of the Home tab. Restore purchase is on the paywall and on the Pro card at the bottom of the Home tab (the "Restore" link). People who bought the paid version 1.0 are unlocked automatically.
+
 PRIVACY: no data is collected. Everything is stored in a file in the app's Documents folder on the device.
 
 GUIDELINE 2.1 INFORMATION (a screen recording was sent in the App Review reply)
@@ -17,7 +19,7 @@ Baseline Ledger is a private tennis practice journal and match log. Most club pl
 No setup, login, credentials or sample files are required. A new install starts empty. Tap "Start hitting" on the Home tab, choose a stroke and pattern, and tap In / Winner / an error type for each ball. For serves, choose Deuce or Ad and 1st or 2nd, then tap the zone of the service box where the ball landed. Tap "Finish & journal", then "Save to ledger". Tap "Log match" to open the match sheet and tap a set score to change it. The Journal, Matches, Stats and Gear tabs show the saved data.
 
 4. EXTERNAL SERVICES, TOOLS AND PLATFORMS
-None. The app makes no network requests of any kind. It uses no data providers, no authentication service, no payment processor, no AI service, no analytics, no crash reporting, no advertising SDK and no third-party frameworks. It is built only with Apple's SwiftUI, Swift Charts and Foundation. All data is saved as a JSON file in the app's own Documents folder on the device.
+None. The app makes no network requests of any kind. It uses no data providers, no authentication service, no payment processor other than Apple's In-App Purchase (StoreKit), no AI service, no analytics, no crash reporting, no advertising SDK and no third-party frameworks. It is built only with Apple's SwiftUI, Swift Charts, StoreKit and Foundation. All data is saved as a JSON file in the app's own Documents folder on the device.
 
 5. REGIONAL DIFFERENCES
 None. The app functions identically in every region. It is offline and has no region-dependent features, content or restrictions.

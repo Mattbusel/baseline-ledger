@@ -72,6 +72,13 @@ jobs:
           xcrun simctl launch "$udid" com.mattbusel.baselineledger -shot journal
           sleep 6
           xcrun simctl io "$udid" screenshot "shots/07.png"
+          # Not store screenshots: the free Stats tab and the paywall, for the IAP review screenshot.
+          for shot in locked paywall; do
+            xcrun simctl terminate "$udid" com.mattbusel.baselineledger || true
+            xcrun simctl launch "$udid" com.mattbusel.baselineledger -shot $shot
+            sleep 7
+            xcrun simctl io "$udid" screenshot "shots/iap-$shot.png"
+          done
       - uses: actions/upload-artifact@v4
         if: always()
         with:

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct GearView: View {
     @Environment(Ledger.self) private var ledger
+    @Environment(Pro.self) private var pro
     @State private var editing: Racquet?
 
     var body: some View {
@@ -10,6 +11,8 @@ struct GearView: View {
                 PageHeader(eyebrow: "Racquets & strings", title: "Gear")
                 Spacer()
                 Button {
+                    // One racquet is free; a second frame is Pro. Racquets already added stay.
+                    guard pro.unlocked || ledger.racquets.isEmpty else { pro.ask(.racquets); return }
                     editing = Racquet(name: "", mains: "", crosses: "", mainTension: 52, crossTension: 50, strung: .now)
                 } label: {
                     Image(systemName: "plus").font(.body(18, .semibold)).foregroundStyle(Gold.ink)

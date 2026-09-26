@@ -20,6 +20,7 @@ struct HomeView: View {
             goals
             if !ledger.matches.isEmpty { recentMatches }
             if ledger.sessions.isEmpty && ledger.matches.isEmpty { emptyState }
+            ProCard()
         }
     }
 
