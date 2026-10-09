@@ -5,18 +5,18 @@ import { chromium } from "file:///C:/Users/Matthew/lastmile/node_modules/playwri
 import { readFileSync, readdirSync, rmSync, mkdirSync } from "fs";
 
 const src = process.argv[2];
-const out = "C:/Users/Matthew/fairway-ledger/fastlane/screenshots/en-US";
+const out = "C:/Users/Matthew/baseline-ledger/fastlane/screenshots/en-US";
 const plan = [
-  ["home", "Your game,<br>in one ledger.", "Handicap, practice and rounds, <b>finished in gold.</b>"],
-  ["scorecard", "Every hole,<br>every putt.", "Score, putts, fairways, penalties, <b>and your net.</b>"],
-  ["widgets", "Your round on<br>the Lock Screen.", "Score to par as you play, <b>and a handicap widget.</b>"],
-  ["plan", "Practice what<br>costs you strokes.", "A weekly plan <b>built from your own numbers.</b>"],
-  ["rounds", "Saved courses,<br>nine or eighteen.", "Pars, rating and slope <b>fill in by themselves.</b>"],
-  ["course", "Know every hole<br>you play.", "The ones that cost you, <b>and the ones to attack.</b>"],
-  ["stats", "See where the<br>strokes go.", "Par 3s, 4s and 5s, <b>penalties and three-putts.</b>"],
-  ["poster", "A round worth<br>framing.", "Gold-leaf scorecards <b>to share.</b>"],
-  ["live", "Log the range,<br>ball by ball.", "Strike, shape, misses <b>and real carries.</b>"],
-  ["paywall", "Free to log.<br>Pro, once.", "The full stat book for <b>one payment, no subscription.</b>"],
+  ["score", "Score it live,<br>point by point.", "Two buttons. <b>The stats fill themselves in.</b>"],
+  ["widgets", "The score on your<br>Lock Screen.", "Live match, plus <b>Record and Form widgets.</b>"],
+  ["opponents", "Know your record<br>against everyone.", "Head to head, sets, <b>and your own notes.</b>"],
+  ["scout", "Scout the<br>rematch.", "What's worked, and <b>a three-point plan.</b>"],
+  ["match", "Every match,<br>with momentum.", "The swing of every point, <b>scored live.</b>"],
+  ["clutch", "How you play<br>when it's close.", "Tiebreaks, deciding sets <b>and break points.</b>"],
+  ["home", "Your game,<br>in one ledger.", "Matches, practice and strings, <b>finished in gold.</b>"],
+  ["poster", "A match worth<br>framing.", "Gold-leaf scorecards <b>to share.</b>"],
+  ["live", "Practice, ball<br>by ball.", "Every stroke, every serve, <b>every miss.</b>"],
+  ["shop", "Pick your<br>court.", "Clay, lawn, hard court, night, <b>each with its own icon.</b>"],
 ];
 const files = readdirSync(src);
 rmSync(out, { recursive: true, force: true });
@@ -33,7 +33,7 @@ for (const [key, head, sub] of plan) {
 <style>
   body{margin:0;width:1320px;height:2868px;overflow:hidden;background:#0b0a08;font-family:Inter,sans-serif}
   .glow{position:absolute;inset:0;background:radial-gradient(1200px 900px at 50% -8%,rgba(212,175,55,.26),transparent 62%),radial-gradient(900px 700px at 100% 100%,rgba(156,122,34,.10),transparent 60%)}
-  .rule{position:absolute;left:96px;right:96px;top:150px;height:2px;background:linear-gradient(90deg,transparent,rgba(247,231,176,.6),transparent)}
+  .seam{position:absolute;left:0;top:30px}
   .col{position:absolute;left:96px;right:96px;top:196px;display:flex;flex-direction:column;align-items:center;text-align:center}
   h1{margin:0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:118px;line-height:1.0;letter-spacing:-1px;
      background:linear-gradient(135deg,#9e7824 0%,#f7e6a3 30%,#cca33a 52%,#fff0bd 74%,#a8802a 100%);-webkit-background-clip:text;color:transparent}
@@ -41,7 +41,7 @@ for (const [key, head, sub] of plan) {
   p b{color:#f7e7b0;font-weight:600}
   .phone{margin:70px auto 0;width:1060px;border-radius:118px;padding:20px;background:linear-gradient(135deg,#6b4f1a,#d4af37 30%,#3a2e14 55%,#cca33a 80%,#6b4f1a);box-shadow:0 60px 140px rgba(0,0,0,.75)}
   .phone img{display:block;width:100%;border-radius:100px}
-</style></head><body><div class="glow"></div><div class="rule"></div>
+</style></head><body><div class="glow"></div><svg class="seam" width="1320" height="180" viewBox="0 0 1320 180"><defs><linearGradient id="sg" x1="0" x2="1"><stop offset="0" stop-color="#9e7824" stop-opacity="0"/><stop offset=".5" stop-color="#f7e6a3"/><stop offset="1" stop-color="#9e7824" stop-opacity="0"/></linearGradient></defs><path d="M60 40 C 460 190, 860 190, 1260 40" stroke="url(#sg)" stroke-width="3" fill="none"/><path d="M60 150 C 460 0, 860 0, 1260 150" stroke="url(#sg)" stroke-width="3" fill="none" opacity=".55"/></svg>
 <div class="col"><h1>${head}</h1><p>${sub}</p>
 <div class="phone"><img src="data:image/png;base64,${img}"></div></div>
 </body></html>`);

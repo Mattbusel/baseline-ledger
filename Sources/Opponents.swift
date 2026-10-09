@@ -193,6 +193,12 @@ struct ScoutReport: Identifiable {
 
 /// Built on the phone from your own matches. Nothing leaves the ledger.
 enum Scout {
+    /// Non-empty lines, each once, in order.
+    static func unique(_ xs: [String]) -> [String] {
+        var seen = Set<String>()
+        return xs.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty && seen.insert($0.lowercased()).inserted }
+    }
+
     static func make(_ l: Ledger, opponent o: OpponentSummary) -> ScoutReport {
         let ms = o.matches
         let all = l.matches
@@ -223,9 +229,9 @@ enum Scout {
             let r = Double(w) / Double(max(1, ue)), rAll = Double(wAll) / Double(max(1, ueAll))
             sections.append(("Shot quality", "\(w) winners to \(ue) unforced errors against \(first), a ratio of \(String(format: "%.2f", r))" + (all.count > ms.count ? " (you average \(String(format: "%.2f", rAll)))." : ".")))
         }
-        let worked = ms.filter(\.won).map(\.whatWorked).filter { !$0.isEmpty }.prefix(2)
+        let worked = unique(ms.filter(\.won).map(\.whatWorked)).prefix(2)
         if !worked.isEmpty { sections.append(("What's worked", worked.map { "“\($0)”" }.joined(separator: "\n"))) }
-        let hurt = ms.map(\.whatDidnt).filter { !$0.isEmpty }.prefix(2)
+        let hurt = unique(ms.map(\.whatDidnt)).prefix(2)
         if !hurt.isEmpty { sections.append(("What's hurt you", hurt.map { "“\($0)”" }.joined(separator: "\n"))) }
         if let n = l.scouting[o.id], !n.isEmpty { sections.append(("Your notes", n)) }
 

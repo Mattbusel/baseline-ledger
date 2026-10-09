@@ -2,27 +2,32 @@
 
 ---
 
-No account, login or network connection is required.
+No account, login or network connection is required. A new install starts empty.
 
-HOW TO USE: The Home tab shows a summary. Tap "Start hitting" to open the live court screen: choose a stroke and pattern, then tap In / Winner / an error type for each ball. For serves, choose Deuce/Ad and 1st/2nd and tap the zone of the service box where the ball landed. Tap "Finish & journal" to rate the session and write notes, then "Save to ledger". "Log match" opens the match sheet (tap a set score to change it). The Journal, Matches, Stats and Gear tabs show saved data. A new install starts empty.
+WHAT IS NEW IN 1.2: live match scoring point by point (with a Live Activity showing the score on the Lock Screen and in the Dynamic Island), head-to-head records and notes per opponent, on-device scouting reports, shareable match posters, Record and Form widgets (WidgetKit extension, data shared through the app group group.com.mattbusel.baselineledger), Pro momentum and clutch charts, and six new in-app purchases.
 
-IN-APP PURCHASE: the app is free. One non-consumable in-app purchase, "Baseline Ledger Pro" (com.mattbusel.baselineledger.pro), unlocks the full stat book on the Stats tab (first serve trend, winners and errors, results by surface, serve placement, stroke consistency, error mix, practice mix), tracking more than one racquet on the Gear tab, and spreadsheet export. Practice logging, the journal, match logging, goals, one racquet and the last-ten-matches averages are free. To see the paywall: open the Stats tab and tap "See Baseline Ledger Pro", or add one racquet on the Gear tab and tap + again, or tap the lock on the "Export the ledger" card at the bottom of the Stats tab, or tap SEE on the Pro card at the bottom of the Home tab. Restore purchase is on the paywall and on the Pro card at the bottom of the Home tab (the "Restore" link). People who bought the paid version 1.0 are unlocked automatically.
+HOW TO USE: Home > "Score match" (or the gold ball button on the Matches tab) opens the live scorer. Enter an opponent, pick the format, tap "Start the match", then tap "You won it" or "They won it" for each point (Fault gives a second serve; Winner, Ace and Your error tag the point). "End" saves the match and opens the match sheet. "Start hitting" on Home logs a practice session ball by ball. Matches tab > Head to head lists every opponent.
 
-PRIVACY: no data is collected. Everything is stored in a file in the app's Documents folder on the device.
+IN-APP PURCHASES (StoreKit 2, all optional; Restore is on the Pro card at the bottom of Home and in the Extras shop):
+- Baseline Ledger Pro (existing non-consumable, $4.99): the full stat book on the Stats tab, momentum charts, clutch numbers, the Form widget, more than one racquet, CSV export. Paywall: Stats tab > "See Baseline Ledger Pro", or SEE on the Pro card at the bottom of Home. Paid-era buyers are unlocked automatically (production only).
+- Scouting Reports, $0.99 consumable (3 credits): Matches > Head to head > an opponent > Scouting report. One report a week is free, so the first tap shows a report; the next one offers 3 more for $0.99. A report is computed on the device from the user's matches against that opponent.
+- Match Posters, $0.99 consumable (3 credits): open a saved match > Poster. The first poster is free; after that 3 more for $0.99.
+- Red Clay, Lawn, Hard Court and Night Session finishes, $0.99 each, non-consumable: Home > Extras card at the bottom. A bought finish recolours the app and widgets and switches the app icon (alternate icons). Gold Leaf is free.
+To test a consumable purchase on a fresh install: log two matches against the same opponent (Matches > pencil button), open Head to head > that player > Scouting report twice.
 
-GUIDELINE 2.1 INFORMATION (a screen recording was sent in the App Review reply)
+PRIVACY: no data is collected. Everything is stored on the device; the widgets read a small summary through the app group.
 
 2. PURPOSE AND TARGET AUDIENCE
-Baseline Ledger is a private tennis practice journal and match log. Most club players hit without recording anything, so they cannot tell whether they are improving or what to work on next. The app gives them a fast, one-handed way to tally each ball during a hitting session (in, winner, error type by stroke and pattern), chart serve placement and percentage, journal each session with a focus note and a "work on next" note, log match results set by set, keep track of racquets and strings, and see trends over time. The audience is recreational and competitive club tennis players who want to improve deliberately. It is rated 4+.
+A private tennis scorekeeper, practice journal and match log for club players who want to improve deliberately. Rated 4+.
 
 3. SETUP AND ACCESS
-No setup, login, credentials or sample files are required. A new install starts empty. Tap "Start hitting" on the Home tab, choose a stroke and pattern, and tap In / Winner / an error type for each ball. For serves, choose Deuce or Ad and 1st or 2nd, then tap the zone of the service box where the ball landed. Tap "Finish & journal", then "Save to ledger". Tap "Log match" to open the match sheet and tap a set score to change it. The Journal, Matches, Stats and Gear tabs show the saved data.
+No setup, login or credentials.
 
-4. EXTERNAL SERVICES, TOOLS AND PLATFORMS
-None. The app makes no network requests of any kind. It uses no data providers, no authentication service, no payment processor other than Apple's In-App Purchase (StoreKit), no AI service, no analytics, no crash reporting, no advertising SDK and no third-party frameworks. It is built only with Apple's SwiftUI, Swift Charts, StoreKit and Foundation. All data is saved as a JSON file in the app's own Documents folder on the device.
+4. EXTERNAL SERVICES
+None. No network requests, analytics, advertising or third-party frameworks. Built with SwiftUI, Swift Charts, WidgetKit, ActivityKit, StoreKit and Foundation.
 
 5. REGIONAL DIFFERENCES
-None. The app functions identically in every region. It is offline and has no region-dependent features, content or restrictions.
+None.
 
 6. REGULATED INDUSTRY / PROTECTED MATERIAL
-Not applicable. The app does not operate in a regulated industry. It is not affiliated with any tennis federation or rating system, and no logos, brands, player names or licensed material are included. All art, text and code are my own work.
+Not applicable. Not affiliated with any tennis federation or rating system; UTR and NTRP appear only as free-text labels the user types. All art, text and code are my own work.
