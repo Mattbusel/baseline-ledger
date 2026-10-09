@@ -13,9 +13,30 @@ struct MatchesView: View {
                 PageHeader(eyebrow: "\(ledger.record.won) won · \(ledger.record.lost) lost", title: "Matches")
                 Spacer()
                 Button { router.editingMatch = Match() } label: {
-                    Image(systemName: "plus").font(.body(18, .semibold)).foregroundStyle(Gold.ink)
+                    Image(systemName: "square.and.pencil").font(.body(17, .semibold)).foil()
+                        .frame(width: 48, height: 48).background(Circle().fill(Gold.lacquerHi))
+                        .overlay(Circle().strokeBorder(Gold.hairline, lineWidth: 0.8))
+                }
+                .buttonStyle(PressStyle())
+                .accessibilityLabel("Log a match afterwards")
+                Button { router.scoring = Match() } label: {
+                    Image(systemName: "tennisball.fill").font(.body(18, .semibold)).foregroundStyle(Gold.ink)
                         .frame(width: 48, height: 48).background(Circle().fill(Gold.foil))
                         .shadow(color: Gold.leaf.opacity(0.4), radius: 12)
+                }
+                .buttonStyle(PressStyle())
+                .accessibilityLabel("Score a match live")
+            }
+            if !ledger.opponents.isEmpty {
+                Button { router.opponents = true } label: {
+                    HStack(spacing: 12) {
+                        Image(systemName: "person.2.fill").font(.body(15, .semibold)).foil()
+                        Text("Head to head").font(.display(17, .medium)).foregroundStyle(Gold.ivory)
+                        Text("\(ledger.opponents.count) players").font(.body(12)).foregroundStyle(Gold.muted)
+                        Spacer()
+                        Image(systemName: "chevron.right").font(.body(12, .bold)).foregroundStyle(Gold.muted)
+                    }
+                    .card(padding: 14, radius: 20)
                 }
                 .buttonStyle(PressStyle())
             }
@@ -31,7 +52,7 @@ struct MatchesView: View {
                 VStack(spacing: 12) {
                     Image(systemName: "trophy").font(.system(size: 38)).foil()
                     Text("No matches yet").font(.display(20)).foregroundStyle(Gold.ivory)
-                    Text("Log the score, the serve numbers, break points and what worked. The patterns show up after a few.")
+                    Text("Score your next match live, point by point, or log one afterwards. The patterns show up after a few.")
                         .font(.body(14)).foregroundStyle(Gold.muted).multilineTextAlignment(.center)
                 }
                 .frame(maxWidth: .infinity).card(padding: 26)
@@ -103,6 +124,8 @@ struct MatchCard: View {
 /// The match sheet: score, serve, pressure points, shot quality, reflection.
 struct MatchEditorView: View {
     @Environment(Ledger.self) private var ledger
+    @Environment(Router.self) private var router
+    @Environment(Pro.self) private var pro
     @Environment(\.dismiss) private var dismiss
     @State var match: Match
     @State private var confirmDelete = false
@@ -115,6 +138,8 @@ struct MatchEditorView: View {
                     SheetHeader(eyebrow: match.date.ledgerDay, title: match.opponent.isEmpty ? "New match" : "vs \(match.opponent)") { dismiss() }
                         .padding(.horizontal, -20)
                     scoreboard
+                    if match.isLive { liveCard }
+                    if ledger.matches.contains(where: { $0.id == match.id }) { extrasRow }
                     LedgerField(label: "Opponent", text: $match.opponent, prompt: "Name")
                     HStack(spacing: 10) {
                         LedgerField(label: "Their level", text: $match.opponentLevel, prompt: "UTR 7.2")
@@ -201,6 +226,46 @@ struct MatchEditorView: View {
                 case "match.worked": match.whatWorked = "Serving to the backhand on big points."
                 case "match.save": ledger.upsert(match); Haptic.done(); dismiss()
                 default: break
+                }
+            }
+        }
+    }
+
+    /// The point-by-point story of a match scored live.
+    private var liveCard: some View {
+        let s = ScoreState.replay(match.points, match.scoring ?? LiveFormat())
+        return VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Eyebrow("Scored live · \(s.pointsWon) of \(s.pointsPlayed) points")
+                Spacer()
+                Text("\(pct(s.pointsWon, s.pointsPlayed))%").font(.figure(15)).foil()
+            }
+            if pro.unlocked {
+                MomentumChart(values: s.momentum).frame(height: 100)
+                Text("Above the line you were ahead on points; the steep stretches are the runs.").font(.body(11.5)).foregroundStyle(Gold.muted)
+            } else {
+                Button { pro.ask(.stats) } label: {
+                    HStack(spacing: 10) {
+                        Image(systemName: "lock.fill").font(.body(13, .bold)).foil()
+                        Text("The momentum chart of every point comes with Pro").font(.body(13, .semibold)).foregroundStyle(Gold.ivory)
+                        Spacer()
+                    }
+                    .padding(12).background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(Gold.ink.opacity(0.5)))
+                }
+                .buttonStyle(PressStyle())
+            }
+        }
+        .card(padding: 16)
+    }
+
+    private var extrasRow: some View {
+        HStack(spacing: 10) {
+            GhostButton("Poster", icon: "photo.artframe") { router.poster = match }
+            if !match.opponent.trimmingCharacters(in: .whitespaces).isEmpty {
+                GhostButton("Head to head", icon: "person.2.fill") {
+                    let n = match.opponent.trimmingCharacters(in: .whitespaces)
+                    dismiss()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) { router.opponent = n }
                 }
             }
         }

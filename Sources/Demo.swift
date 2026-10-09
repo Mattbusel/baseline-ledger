@@ -104,6 +104,44 @@ enum Demo {
             l.matches.append(m)
         }
 
+        // One match scored point by point, the most recent, against the most-played opponent.
+        let f = LiveFormat(bestOf: 3, noAd: false, matchTiebreak: true, iServeFirst: true)
+        var best: [PointLog] = []
+        for seed in UInt64(40)..<UInt64(60) {
+            var r = SeededRNG(seed: seed)
+            var pts: [PointLog] = []
+            while pts.count < 400 {
+                let st = ScoreState.replay(pts, f)
+                if st.over { break }
+                let u = { Double(r.next() % 10_000) / 10_000 }
+                let firstIn = u() < 0.62
+                if st.iServe && !firstIn && u() < 0.12 {
+                    pts.append(PointLog(iWon: false, iServed: true, kind: .doubleFault, firstIn: false)); continue
+                }
+                let win = u() < (st.iServe ? (firstIn ? 0.71 : 0.53) : 0.44)
+                var kind = PointKind.rally
+                if st.iServe && firstIn && win && u() < 0.13 { kind = .ace }
+                else if win && u() < 0.28 { kind = .winner }
+                else if !win && u() < 0.5 { kind = .error }
+                pts.append(PointLog(iWon: win, iServed: st.iServe, kind: kind, firstIn: firstIn))
+            }
+            let st = ScoreState.replay(pts, f)
+            if st.over && st.won && st.sets.count == 2 { best = pts; break }
+            if best.isEmpty && st.over { best = pts }
+        }
+        var live = Match()
+        live.date = daysAgo(1, hour: 17)
+        live.opponent = "Chris Maddox"; live.opponentLevel = "UTR 7.4"; live.event = "Club ladder"; live.surface = .hard
+        live.scoring = f
+        live.points = best
+        ScoreState.replay(best, f).apply(to: &live)
+        live.gamePlan = "Kick serve to the backhand, take the forehand early."
+        live.whatWorked = "Kick serve out wide on the ad side, and coming in behind the backhand slice."
+        live.whatDidnt = "Rushed the first two return games."
+        live.mood = 5
+        l.matches.append(live)
+        l.scouting["chris maddox"] = "Lefty. Big forehand, chips the backhand return. Serve to the T on the deuce side; he hates high balls to the backhand."
+
         l.racquets = [
             Racquet(name: "Pure Aero 98", mains: "RPM Blast 17", crosses: "RPM Blast 17", mainTension: 52, crossTension: 50,
                     strung: daysAgo(12), hours: 9.5,

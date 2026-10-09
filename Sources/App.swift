@@ -1,10 +1,12 @@
 import SwiftUI
+import WidgetKit
 
 @main
 struct BaselineLedgerApp: App {
     @State private var ledger: Ledger
     @State private var router = Router()
     @State private var pro: Pro
+    @State private var extras: Extras
 
     init() {
         let args = ProcessInfo.processInfo.arguments
@@ -15,6 +17,8 @@ struct BaselineLedgerApp: App {
         let lockedShot = shot.map { $0.hasPrefix("paywall") || $0.hasPrefix("locked") } ?? false
         let staged = shot != nil || args.contains("-demoAutoplay")
         _pro = State(initialValue: staged ? Pro(forced: !lockedShot) : Pro())
+        _extras = State(initialValue: Extras(demo: staged, locked: lockedShot || shot == "shop"))
+        if staged { Court.current = Court.byID("gold") }
     }
 
     var body: some Scene {
@@ -23,9 +27,19 @@ struct BaselineLedgerApp: App {
                 .environment(ledger)
                 .environment(router)
                 .environment(pro)
+                .environment(extras)
                 .preferredColorScheme(.dark)
                 .tint(Gold.leaf)
-                .onAppear { router.applyShotArgs(ledger, pro); Autopilot.shared.run(router) }
+                .onAppear {
+                    router.applyShotArgs(ledger, pro)
+                    Autopilot.shared.run(router)
+                    ledger.didSave = { [ledger, pro] in
+                        ledger.glance(unlocked: pro.unlocked, weeklyTarget: UserDefaults.standard.object(forKey: "weeklyTarget") as? Int ?? 300).save()
+                        WidgetCenter.shared.reloadAllTimelines()
+                    }
+                    ledger.didSave?()
+                }
+                .onChange(of: pro.unlocked) { _, _ in ledger.didSave?() }
         }
     }
 }
@@ -39,6 +53,16 @@ final class Router {
     var finishing: PracticeSession?
     var editingMatch: Match?
     var viewing: PracticeSession?
+    /// A match being scored point by point.
+    var scoring: Match?
+    var poster: Match?
+    var opponents = false
+    var opponent: String?
+    var scout: ScoutReport?
+    var shop = false
+    var showcase = false
+    /// Bumped when the court finish changes, so every view redraws in the new colours.
+    var courtTick = 0
 
     @MainActor
     func applyShotArgs(_ l: Ledger, _ pro: Pro) {
@@ -57,6 +81,17 @@ final class Router {
         case "journal": tab = .journal
         case "locked": tab = .stats
         case "paywall": tab = .stats; pro.paywall = .stats
+        case "score":
+            // Mid-match, so the board, the break point flag and the momentum all show.
+            if var m = l.matches.first(where: { $0.isLive }) { m.id = UUID(); m.points = Array(m.points.prefix(m.points.count - 9)); scoring = m }
+        case "setup": scoring = Match()
+        case "opponents": tab = .matches; opponents = true
+        case "opponent": tab = .matches; opponent = l.opponents.first?.name
+        case "scout": tab = .matches; if let o = l.opponents.first { scout = Scout.make(l, opponent: o) }
+        case "poster": tab = .matches; poster = l.matches.first { $0.isLive } ?? l.matches.first
+        case "shop": shop = true
+        case "widgets": showcase = true
+        case "clutch": tab = .stats
         default: break
         }
     }
@@ -93,6 +128,14 @@ struct RootView: View {
             }
             .padding(.bottom, 2)
         }
+        .id(router.courtTick)
+        .overlay { if router.showcase { WidgetShowcase() } }
+        .fullScreenCover(item: $router.scoring) { m in LiveMatchView(match: m) }
+        .sheet(item: $router.poster) { m in PosterSheet(match: m).presentationBackground(Gold.ink) }
+        .sheet(isPresented: $router.opponents) { OpponentsView().presentationBackground(Gold.ink) }
+        .sheet(item: Binding(get: { router.opponent.map(NameID.init) }, set: { router.opponent = $0?.id })) { n in OpponentDetail(name: n.id).presentationBackground(Gold.ink) }
+        .sheet(item: $router.scout) { r in ScoutSheet(report: r).presentationBackground(Gold.ink) }
+        .sheet(isPresented: $router.shop) { ShopSheet { router.courtTick += 1 }.presentationBackground(Gold.ink) }
         .fullScreenCover(item: $router.live) { s in LiveSessionView(session: s) }
         .fullScreenCover(item: $router.finishing) { s in FinishSessionView(session: s) }
         .fullScreenCover(item: $router.editingMatch) { m in MatchEditorView(match: m) }
@@ -100,6 +143,8 @@ struct RootView: View {
         .sheet(item: $pro.paywall) { r in PaywallView(reason: r).presentationBackground(Gold.ink) }
     }
 }
+
+struct NameID: Identifiable { let id: String }
 
 /// Every tab is a scroll view with the same margins and room for the floating tab bar.
 struct Page<Content: View>: View {

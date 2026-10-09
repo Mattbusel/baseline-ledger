@@ -12,8 +12,8 @@ struct HomeView: View {
             hero
             HStack(spacing: 12) {
                 FoilButton("Start hitting", icon: "play.fill") { router.live = PracticeSession() }
-                GhostButton("Log match", icon: "trophy.fill") { router.editingMatch = Match() }
-                    .frame(width: 142)
+                GhostButton("Score match", icon: "tennisball.fill") { router.scoring = Match() }
+                    .frame(width: 150)
             }
             if let r = ledger.racquets.first, r.freshness < 0.25 { restringNudge(r) }
             if let last = ledger.sessions.first { lastSession(last) }
@@ -21,6 +21,7 @@ struct HomeView: View {
             if !ledger.matches.isEmpty { recentMatches }
             if ledger.sessions.isEmpty && ledger.matches.isEmpty { emptyState }
             ProCard()
+            ExtrasCard()
         }
     }
 
@@ -220,6 +221,31 @@ struct HomeView: View {
                 .font(.body(14)).foregroundStyle(Gold.muted).multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity).card(padding: 26)
+    }
+}
+
+/// The way into the 99-cent corner.
+struct ExtrasCard: View {
+    @Environment(Router.self) private var router
+    var body: some View {
+        Button { router.shop = true } label: {
+            HStack(spacing: 14) {
+                HStack(spacing: -10) {
+                    ForEach(Court.all.prefix(4)) { c in
+                        Circle().fill(LinearGradient(colors: c.band, startPoint: .topLeading, endPoint: .bottomTrailing)).frame(width: 24, height: 24)
+                            .overlay(Circle().strokeBorder(Gold.ink, lineWidth: 2))
+                    }
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Extras").font(.display(17, .medium)).foregroundStyle(Gold.ivory)
+                    Text("Scouting reports, match posters, court finishes. 99¢ each.").font(.body(12)).foregroundStyle(Gold.muted).lineLimit(2)
+                }
+                Spacer()
+                Image(systemName: "chevron.right").font(.body(12, .bold)).foregroundStyle(Gold.muted)
+            }
+            .card(padding: 14)
+        }
+        .buttonStyle(PressStyle())
     }
 }
 

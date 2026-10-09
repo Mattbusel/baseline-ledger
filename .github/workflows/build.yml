@@ -25,7 +25,7 @@ jobs:
           echo "UDID=$udid" >> "$GITHUB_ENV"
           xcodebuild build -project BaselineLedger.xcodeproj -scheme BaselineLedger -configuration Debug             -destination "id=$udid" -derivedDataPath dd CODE_SIGNING_ALLOWED=NO | xcpretty
       - name: Screenshots
-        timeout-minutes: 15
+        timeout-minutes: 25
         run: |
           udid=$UDID
           xcrun simctl shutdown all || true
@@ -40,44 +40,15 @@ jobs:
           app=$(find dd/Build/Products -name "BaselineLedger.app" -path "*iphonesimulator*" | head -1)
           xcrun simctl install "$udid" "$app"
           mkdir -p shots
-          xcrun simctl terminate "$udid" com.mattbusel.baselineledger || true
-          xcrun simctl launch "$udid" com.mattbusel.baselineledger -shot home
-          sleep 6
-          xcrun simctl io "$udid" screenshot "shots/00.png"
-          xcrun simctl terminate "$udid" com.mattbusel.baselineledger || true
-          xcrun simctl launch "$udid" com.mattbusel.baselineledger -shot live
-          sleep 6
-          xcrun simctl io "$udid" screenshot "shots/01.png"
-          xcrun simctl terminate "$udid" com.mattbusel.baselineledger || true
-          xcrun simctl launch "$udid" com.mattbusel.baselineledger -shot finish
-          sleep 6
-          xcrun simctl io "$udid" screenshot "shots/02.png"
-          xcrun simctl terminate "$udid" com.mattbusel.baselineledger || true
-          xcrun simctl launch "$udid" com.mattbusel.baselineledger -shot matches
-          sleep 6
-          xcrun simctl io "$udid" screenshot "shots/03.png"
-          xcrun simctl terminate "$udid" com.mattbusel.baselineledger || true
-          xcrun simctl launch "$udid" com.mattbusel.baselineledger -shot match
-          sleep 6
-          xcrun simctl io "$udid" screenshot "shots/04.png"
-          xcrun simctl terminate "$udid" com.mattbusel.baselineledger || true
-          xcrun simctl launch "$udid" com.mattbusel.baselineledger -shot stats
-          sleep 6
-          xcrun simctl io "$udid" screenshot "shots/05.png"
-          xcrun simctl terminate "$udid" com.mattbusel.baselineledger || true
-          xcrun simctl launch "$udid" com.mattbusel.baselineledger -shot gear
-          sleep 6
-          xcrun simctl io "$udid" screenshot "shots/06.png"
-          xcrun simctl terminate "$udid" com.mattbusel.baselineledger || true
-          xcrun simctl launch "$udid" com.mattbusel.baselineledger -shot journal
-          sleep 6
-          xcrun simctl io "$udid" screenshot "shots/07.png"
-          # Not store screenshots: the free Stats tab and the paywall, for the IAP review screenshot.
-          for shot in locked paywall; do
+          # A warm-up launch: the first screenshot after install can come out blank.
+          xcrun simctl launch "$udid" com.mattbusel.baselineledger -shot home; sleep 8
+          i=0
+          for shot in home score widgets scout opponents poster match clutch setup live shop paywall; do
             xcrun simctl terminate "$udid" com.mattbusel.baselineledger || true
             xcrun simctl launch "$udid" com.mattbusel.baselineledger -shot $shot
-            sleep 7
-            xcrun simctl io "$udid" screenshot "shots/iap-$shot.png"
+            sleep 8
+            xcrun simctl io "$udid" screenshot "shots/$(printf %02d $i)-$shot.png"
+            i=$((i+1))
           done
       - uses: actions/upload-artifact@v4
         if: always()

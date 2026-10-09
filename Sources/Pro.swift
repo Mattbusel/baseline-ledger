@@ -117,9 +117,11 @@ final class Pro {
 
 enum ProCopy {
     static let pitch = "Logging stays free forever. Pro turns the ledger into a stat book."
-    static let short = "The full stat book, every racquet, CSV export."
+    static let short = "The full stat book, momentum and clutch, every racquet, the Form widget, CSV export."
     static let features: [(icon: String, title: String, body: String)] = [
         ("chart.line.uptrend.xyaxis", "Serve and error trends", "First serve percentage and winners against errors, match by match."),
+        ("waveform.path.ecg", "Momentum and clutch", "The swing of every match you score live, plus your tiebreak, deciding-set and break point record."),
+        ("rectangle.3.group.fill", "The Form widget", "Your last ten results, serve numbers and string life on the Home Screen."),
         ("square.grid.3x3.fill", "Where your serves land", "Wide, body and T on each side, first and second serve."),
         ("tennisball.fill", "Stroke read", "In-play rate by stroke, how you miss, and what to do about it."),
         ("tennis.racket", "Every racquet", "Track strings, tension and hours on as many frames as you carry."),

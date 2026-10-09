@@ -7,7 +7,7 @@ options:
   createIntermediateGroups: true
 settings:
   base:
-    MARKETING_VERSION: "1.1"
+    MARKETING_VERSION: "1.2"
     CURRENT_PROJECT_VERSION: "1"
     SWIFT_VERSION: "5.0"
     CODE_SIGN_STYLE: Manual
@@ -18,6 +18,13 @@ targets:
   BaselineLedger:
     type: application
     platform: iOS
+    dependencies:
+      - target: BaselineWidgets
+    entitlements:
+      path: Resources/BaselineLedger.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.mattbusel.baselineledger
     sources:
       - path: Sources
       - path: Resources/PrivacyInfo.xcprivacy
@@ -30,8 +37,11 @@ targets:
         PRODUCT_NAME: BaselineLedger
         INFOPLIST_KEY_CFBundleDisplayName: Baseline Ledger
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES: "AppIcon-RedClay AppIcon-Lawn AppIcon-HardCourt AppIcon-NightSession"
+        ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS: YES
         TARGETED_DEVICE_FAMILY: "1"
         SUPPORTS_MACCATALYST: NO
+        PROVISIONING_PROFILE_SPECIFIER: "${APP_PROFILE}"
     info:
       path: Resources/Info.plist
       properties:
@@ -45,6 +55,35 @@ targets:
         UIUserInterfaceStyle: Dark
         UIStatusBarStyle: UIStatusBarStyleLightContent
         ITSAppUsesNonExemptEncryption: false
+        NSSupportsLiveActivities: true
+  BaselineWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Widgets
+      - path: Sources/Shared
+      - path: Resources/PrivacyInfo.xcprivacy
+        buildPhase: resources
+    entitlements:
+      path: Widgets/BaselineWidgets.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.mattbusel.baselineledger
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mattbusel.baselineledger.widgets
+        PRODUCT_NAME: BaselineWidgets
+        PROVISIONING_PROFILE_SPECIFIER: "${EXT_PROFILE}"
+        TARGETED_DEVICE_FAMILY: "1"
+        SKIP_INSTALL: YES
+    info:
+      path: Widgets/Info.plist
+      properties:
+        CFBundleDisplayName: Baseline Ledger
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
 schemes:
   BaselineLedger:
     build:

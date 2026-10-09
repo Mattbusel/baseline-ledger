@@ -28,6 +28,7 @@ struct StatsView: View {
 
     @ViewBuilder private var statBook: some View {
         if !ledger.matches.isEmpty {
+            ClutchCard()
             firstServeTrend
             winnersVsErrors
             bySurface
