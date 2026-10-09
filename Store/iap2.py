@@ -1,7 +1,7 @@
-"""Minder 1.2 in-app purchases: Streak Shield and Focus Posters (consumables), the ambience pack and four eye packs.
+"""Baseline Ledger 1.2 in-app purchases: Scouting Reports and Match Posters (consumables), four court finishes.
 
     python Store/iap2.py create                 make every product (idempotent): text, $0.99, all territories
-    python Store/iap2.py shot <kind> <png>      review screenshot for every product of a kind (shield | posters | ambience | pack)
+    python Store/iap2.py shot <kind> <png>      review screenshot for every product of a kind (scouts | posters | court)
     python Store/iap2.py status                 show each product's state
     python Store/iap2.py submit                 queue every product for the next version submission
 """
@@ -15,27 +15,26 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import asc  # noqa: E402
 import iap  # noqa: E402
 
-FINISH_NOTE = ("Non-consumable, one-time. The Extras card at the bottom of the Home tab opens the shop. Tapping a finish's "
-               "price buys it; it then recolours the app and widgets and switches the app icon to match. Gold Leaf is free. "
-               "Restore purchases is in the shop.")
+COURT_NOTE = ("Non-consumable, one-time. The Extras card at the bottom of the Home tab opens the shop. Tapping a court finish's "
+              "price buys it; it then recolours the app and widgets and switches the app icon to match. Gold Leaf is free. "
+              "Restore purchases is in the shop.")
 PRODUCTS = [
     # product id suffix, type, name (30 max), description (55 max), kind, review note
-    ("plans", "CONSUMABLE", "Practice Plans", "Three more practice plans built from your own numbers.", "plans",
-     "Consumable, 3 plan credits per purchase. Home tab, 'This week's plan' card: one plan a week is free. After drawing it, "
-     "the card offers 3 more plans for $0.99 (also in Extras at the bottom of Home). Each plan is a 45-60 minute range session "
-     "built on the device from the user's logged rounds, bag and practice (putting, approach, tee, short game), and opens "
-     "in the live practice session with targets set. Each plan drawn uses one credit."),
-    ("posters", "CONSUMABLE", "Round Posters", "Three gold-leaf posters of your rounds to share.", "posters",
-     "Consumable, 3 poster credits per purchase; the first poster is free. Rounds tab: hold a round > Round poster (or open "
-     "a round's card, Course details > Make a round poster). Making a poster renders a shareable image of that round and "
-     "uses one credit; when none are left the button offers 3 for $0.99."),
-    ("finish.rose", "NON_CONSUMABLE", "Rose Gold Finish", "Rose gold for the app and widgets, with its icon.", "finish", FINISH_NOTE),
-    ("finish.platinum", "NON_CONSUMABLE", "Platinum Finish", "Platinum for the app and widgets, with its icon.", "finish", FINISH_NOTE),
-    ("finish.emerald", "NON_CONSUMABLE", "Emerald Finish", "Emerald for the app and widgets, with its icon.", "finish", FINISH_NOTE),
-    ("finish.copper", "NON_CONSUMABLE", "Copper Finish", "Copper for the app and widgets, with its icon.", "finish", FINISH_NOTE),
+    ("scouts", "CONSUMABLE", "Scouting Reports", "Three scouting reports on players you've faced.", "scouts",
+     "Consumable, 3 report credits per purchase. Matches tab > Head to head > an opponent > Scouting report. One report a "
+     "week is free for everyone; after that the button offers 3 more for $0.99 (also in Extras at the bottom of Home). A "
+     "report is built on the device from the user's own logged matches against that opponent: record, serve and break point "
+     "numbers against them versus overall, what worked, and a three-point game plan. Each report uses one credit."),
+    ("posters", "CONSUMABLE", "Match Posters", "Three gold-leaf posters of your matches to share.", "posters",
+     "Consumable, 3 poster credits per purchase; the first poster is free. Matches tab > open a match > Poster. Making a "
+     "poster renders a shareable image of that match and uses one credit; when none are left the button offers 3 for $0.99."),
+    ("court.clay", "NON_CONSUMABLE", "Red Clay Finish", "Red clay colours for the app, widgets and icon.", "court", COURT_NOTE),
+    ("court.lawn", "NON_CONSUMABLE", "Lawn Finish", "Grass court colours for the app, widgets and icon.", "court", COURT_NOTE),
+    ("court.hard", "NON_CONSUMABLE", "Hard Court Finish", "Hard court blue for the app, widgets and icon.", "court", COURT_NOTE),
+    ("court.night", "NON_CONSUMABLE", "Night Session Finish", "Optic yellow on black for the app, widgets and icon.", "court", COURT_NOTE),
 ]
 PRICE = "0.99"
-BASE = "com.mattbusel.fairwayledger."
+BASE = "com.mattbusel.baselineledger."
 
 
 def find(pid: str):

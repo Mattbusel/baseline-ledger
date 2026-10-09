@@ -1,1 +1,1 @@
-tennis,practice,journal,match,stats,serve,utr,ntrp,training,rally,strings,tracker,coach
+scorekeeper,scoreboard,utr,ntrp,practice,journal,training,coach,racquet,strings,usta,league,tiebreak

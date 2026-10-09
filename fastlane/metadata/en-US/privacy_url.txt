@@ -1,1 +1,1 @@
-https://mattbusel.github.io/app-pages/baseline-ledger/privacy.html
+https://app-pages-one.vercel.app/baseline-ledger/privacy.html
