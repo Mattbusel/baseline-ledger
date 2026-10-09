@@ -246,6 +246,15 @@ enum Scout {
 struct ScoutSheet: View {
     @Environment(\.dismiss) private var dismiss
     let report: ScoutReport
+
+    private var shareText: String {
+        var lines: [String] = [report.opponent + " · scouting report", ""]
+        for (i, p) in report.plan.enumerated() { lines.append("\(i + 1). \(p)") }
+        lines.append("")
+        for sec in report.sections { lines.append(sec.title); lines.append(sec.body); lines.append("") }
+        return lines.joined(separator: "\n")
+    }
+
     var body: some View {
         ZStack {
             LacquerBackground()
@@ -270,7 +279,7 @@ struct ScoutSheet: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .card(padding: 16)
                     }
-                    ShareLink(item: ([report.opponent + " · scouting report", ""] + report.plan.enumerated().map { "\($0.offset + 1). \($0.element)" } + [""] + report.sections.map { $0.title + "\n" + $0.body }).joined(separator: "\n")) {
+                    ShareLink(item: shareText) {
                         Label("Share the report", systemImage: "square.and.arrow.up").font(.body(15, .semibold)).foil()
                             .frame(maxWidth: .infinity).frame(height: 50).overlay(Capsule().strokeBorder(Gold.hairline))
                     }
