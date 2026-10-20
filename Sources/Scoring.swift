@@ -28,20 +28,25 @@ enum MatchLive {
     static func state(_ s: ScoreState, _ f: LiveFormat, secondServe: Bool = false) -> MatchActivity.ContentState {
         MatchActivity.ContentState(s, f, secondServe: secondServe)
     }
+    /// A new match replaces whatever card a previous one left behind.
     static func start(opponent: String, _ s: ScoreState, _ f: LiveFormat) {
-        guard Activity<MatchActivity>.activities.isEmpty, ActivityAuthorizationInfo().areActivitiesEnabled, !Shots.on else { return }
-        _ = try? Activity.request(attributes: MatchActivity(opponent: opponent),
-                                  content: .init(state: state(s, f), staleDate: .now.addingTimeInterval(5 * 3600)))
+        guard ActivityAuthorizationInfo().areActivitiesEnabled, !Shots.on else { return }
+        let old = Activity<MatchActivity>.activities
+        Task {
+            for a in old { await a.end(nil, dismissalPolicy: .immediate) }
+            _ = try? Activity.request(attributes: MatchActivity(opponent: opponent),
+                                      content: .init(state: state(s, f), staleDate: .now.addingTimeInterval(5 * 3600)))
+        }
     }
     static func update(_ s: ScoreState, _ f: LiveFormat, secondServe: Bool = false) {
         let st = state(s, f, secondServe: secondServe)
-        for a in Activity<MatchActivity>.activities {
+        for a in Activity<MatchActivity>.activities where a.activityState == .active {
             Task { await a.update(.init(state: st, staleDate: .now.addingTimeInterval(5 * 3600))) }
         }
     }
     static func end(_ s: ScoreState?, _ f: LiveFormat) {
         let final = s.map { state($0, f) }
-        for a in Activity<MatchActivity>.activities {
+        for a in Activity<MatchActivity>.activities where a.activityState == .active || a.activityState == .stale {
             Task { await a.end(final.map { .init(state: $0, staleDate: nil) }, dismissalPolicy: final == nil ? .immediate : .after(.now.addingTimeInterval(1800))) }
         }
     }
