@@ -1,45 +1,62 @@
-Baseline Ledger is a tennis scorekeeper, practice journal and match stat book, finished in black and gold. Free to download and free to log, with one optional Pro unlock and no subscription.
-
-Score your match live, keep a proper record of everyone you play, chart where your serves land in practice, and let the numbers tell you what to work on.
+Baseline Ledger is a tennis scorekeeper, practice journal and match stat book, finished in black and gold. Score your match live, keep a proper record of everyone you play, chart where your serves land in practice, and let your own numbers tell you what to work on next.
 
 SCORE IT LIVE
 • Two big buttons: you won the point, they won it. The score keeps itself: 15-30, deuce and ad, tiebreaks, a 10-point match tiebreak, no-ad if you play it
 • Tap Fault for a second serve, or tag the point as an ace, a winner or your error
 • First serve %, points won behind each serve, break points won and saved, winners and errors all fill in as you play
-• The score sits on your Lock Screen and in the Dynamic Island
+• Score from your Lock Screen: Won, Lost and Fault buttons on the live score and in the Dynamic Island, no unlocking between points
+• Every point is saved as you go: close the app mid-set and pick up where you left off
 • Undo any point; save mid-match and finish later
 
 HEAD TO HEAD
 • Everyone you've played, with your record against them, sets won and your serve against them
 • Your own scouting notes on each player
-• Scouting reports: your record, how your serve and nerve hold up against them, what has worked, and a three-point plan for the next match. One a week is free
+• Scouting reports before a rematch: your record, how your serve and nerve hold up against them, what has worked, and a three-point plan
 
 ON COURT PRACTICE
 • Forehand, backhand, serve, return, volley, overhead, slice, drop shot or point play
 • Tap each ball: in, winner, or error into the net, long, wide or off the frame
 • Serves: tap where the ball landed in the service box, deuce or ad, first or second serve
 • Rally counter, and undo any tap
+• Journal: rate the session, your mood and energy; your cue, what clicked, what to work on
 
-YOUR JOURNAL
-• Rate the session, your mood and energy; cue, what clicked, what to work on
+MONTHLY CHALLENGE
+• A new challenge every month: Serve, Rally, Match and Pressure
+• Three targets that count themselves from what you log, and a medal for your cabinet
 
-WIDGETS
-• Record: your match record, win streak and this week's court time (free)
-• Form: your last ten results, serve numbers and string life (Pro)
+WIDGETS, CONTROLS AND SIRI
+• Record widget for the Home Screen and StandBy; record and court time on the Lock Screen
+• Form widget: your last ten results, serve numbers and string life
+• Control Center and Action button controls (iOS 18): Score a Match, Start Hitting
+• Siri and Shortcuts: "Score a match in Baseline Ledger", "What's my record in Baseline Ledger"
 
 BASELINE LEDGER PRO (one-time purchase)
 • Momentum: the swing of every match you score live, point by point
 • Clutch: tiebreak, deciding-set and break point record
 • Win rate by surface, first serve % over time, winners vs errors per match
 • Where your serves land on each side, in-play % by stroke and how you miss
-• Every racquet you carry (one is free), and spreadsheet export
+• Every racquet you carry, and spreadsheet export
+• The Form widget
 
-EXTRAS, 99 CENTS EACH
-• Scouting Reports, 3 for 99¢
-• Match Posters, 3 for 99¢: a gold-leaf scorecard of a match to share (your first is free)
-• Court finishes: Red Clay, Lawn, Hard Court and Night Session, each recolouring the app and widgets with a matching app icon
+BASELINE LEDGER PLUS (subscription)
+Everything in Pro, plus:
+• A new practice plan every week, built on your phone from your own numbers: your weakest stroke, your most common miss, your first serve, your double faults, your break points. Four drills with targets, and one tap to start each
+• Pressure points from every match you score live: service games held, return games broken, 30-all and deuce points, first points, game points and tiebreak points, with a plain-English read on where close games slip
+• Every court finish while subscribed: Red Clay, Lawn, Hard Court and Night Session, each with its own app icon
+• 10 scouting reports and 10 match posters every month
+• iCloud backup and restore of the whole ledger
+
+EXTRAS
+• Scouting Reports and Match Posters, in packs of three
+• Court finishes, each recolouring the app and widgets with a matching app icon
 
 GEAR
 • Racquets with string, tension and date strung; hours on the strings added from your sessions, and a nudge when it's time to restring
 
-Practice logging, live scoring, the journal, match logging, head to head and one racquet are free forever. Already bought Baseline Ledger? Pro is unlocked for you. No account, no ads, no tracking: everything stays on your phone.
+Practice logging, live scoring, Lock Screen scoring, the journal, match logging, head to head, the monthly challenge and one racquet are free forever. Already bought Baseline Ledger or Pro? It stays unlocked for you. No account, no ads, no tracking: everything stays on your phone.
+
+SUBSCRIPTION TERMS
+Baseline Ledger Plus is an optional auto-renewable subscription, monthly or yearly. The yearly plan may start with a free one-week trial for new subscribers. Payment is charged to your Apple ID at confirmation of purchase, or when the free trial ends. The subscription renews automatically at the same price unless auto-renew is turned off at least 24 hours before the end of the current period. Manage or cancel it any time in your Apple ID's subscription settings. Any unused part of a free trial is forfeited when you subscribe.
+
+Terms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Privacy Policy: https://tensorust.com/apps/baseline-ledger/privacy/

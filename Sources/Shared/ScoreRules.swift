@@ -183,19 +183,5 @@ struct ScoreState {
         if p.kind == .winner && p.iWon { winners += 1 }
         if p.kind == .error && !p.iWon { unforcedErrors += 1 }
     }
-
-    /// Write the score and the numbers onto the match.
-    func apply(to m: inout Match) {
-        var s = sets
-        if !over, let last = s.last, last.me == 0, last.them == 0, s.count > 1 { s.removeLast() }
-        m.sets = s
-        m.retired = false
-        m.aces = aces; m.doubleFaults = doubleFaults
-        m.firstServesIn = firstServesIn; m.firstServesTotal = firstServesTotal; m.firstServePointsWon = firstServePointsWon
-        m.secondServePointsWon = secondServePointsWon; m.secondServePointsPlayed = secondServePointsPlayed
-        m.breakPointsWon = breakPointsWon; m.breakPointChances = breakPointChances
-        m.breakPointsSaved = breakPointsSaved; m.breakPointsFaced = breakPointsFaced
-        m.winners = winners; m.unforcedErrors = unforcedErrors
-    }
 }
 

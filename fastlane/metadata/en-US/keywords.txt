@@ -1,1 +1,1 @@
-scorekeeper,scoreboard,utr,ntrp,practice,journal,training,coach,racquet,strings,usta,league,tiebreak
+scorekeeper,scoreboard,utr,ntrp,practice,drills,coach,plan,racquet,strings,usta,league,tiebreak,club
