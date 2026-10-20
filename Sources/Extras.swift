@@ -69,6 +69,9 @@ final class Extras {
             for await r in Transaction.unfinished { await handle(r) }
             await refresh()
         }
+        Task { [weak self] in
+            for await _ in NotificationCenter.default.notifications(named: Plus.storeChanged) { await self?.refresh() }
+        }
     }
 
     func price(_ id: String) -> String { products[id]?.displayPrice ?? (demo ? "$0.99" : "…") }

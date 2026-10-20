@@ -23,6 +23,8 @@ final class Plus {
     static let yearlyID = "com.mattbusel.baselineledger.plus.yearly"
     static let ids = [yearlyID, monthlyID]
     static let name = "Baseline Ledger Plus"
+    /// Posted after a purchase that started on the App Store product page.
+    static let storeChanged = Notification.Name("BaselineStoreChanged")
 
     private(set) var active: Bool
     private(set) var products: [String: Product] = [:]
@@ -35,6 +37,7 @@ final class Plus {
     var message: String?
 
     private var updates: Task<Void, Never>?
+    private var intents: Task<Void, Never>?
     private let key = "baselineledger.plus.active"
     private let forced: Bool
 
@@ -47,6 +50,15 @@ final class Plus {
                 guard case .verified(let t) = r, Plus.ids.contains(t.productID) else { continue }
                 await t.finish()
                 await self?.refresh()
+            }
+        }
+        // A purchase started from the App Store product page (promoted in-app purchases): Plus, or a court finish.
+        // Extras and Pro pick their own transactions up from Transaction.updates.
+        intents = Task { [weak self] in
+            for await intent in PurchaseIntent.intents {
+                if case .success(let r)? = try? await intent.product.purchase(), case .verified(let t) = r { await t.finish() }
+                await self?.refresh()
+                NotificationCenter.default.post(name: Plus.storeChanged, object: nil)
             }
         }
         Task { await refresh() }

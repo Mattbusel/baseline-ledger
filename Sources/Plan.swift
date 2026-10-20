@@ -26,6 +26,7 @@ struct WeekPlan {
 /// Builds this week's plan on the phone from the ledger: the weakest stroke, the most common miss,
 /// the serve, the double faults, the big points. Different every week: the order of the candidates
 /// that are close in need rotates with the week number.
+@MainActor
 enum Planner {
     static func make(_ l: Ledger, week: String = Extras.week) -> WeekPlan {
         let since = Calendar.current.date(byAdding: .day, value: -60, to: .now) ?? .distantPast
