@@ -1,0 +1,60 @@
+Baseline Ledger ist Zähler, Trainingstagebuch und Matchstatistik für Tennis, in Schwarz und Gold.
+
+LIVE ZÄHLEN
+• Zwei große Tasten: dein Punkt, sein Punkt. Einstand, Vorteil, Tiebreaks, Match-Tiebreak und No-Ad zählen sich selbst
+• Fehlaufschlag tippen; Ass, Winner oder eigenen Fehler markieren
+• Erste Aufschläge, Punkte je Aufschlag, Breakbälle genutzt und abgewehrt, Winner und Fehler: alles automatisch
+• Vom Sperrbildschirm: Tasten Gewonnen, Verloren und Fehlaufschlag, auch in der Dynamic Island
+• Jeder Punkt gespeichert und rückgängig zu machen; später weiterzählen
+
+DIREKTER VERGLEICH
+• Bilanz, gewonnene Sätze und Aufschlag gegen jeden Gegner
+• Deine Scouting-Notizen zu jedem Spieler
+• Berichte fürs Rückspiel: Bilanz, Aufschlag und Nerven, was funktioniert hat, Plan in drei Punkten
+
+TRAINING AUF DEM PLATZ
+• Vorhand, Rückhand, Aufschlag, Return, Volley, Schmetterball, Slice, Stopp oder Punktspiel
+• Jeder Ball: drin, Winner, Netz, lang, seitlich aus oder Rahmen
+• Aufschläge: Landepunkt im Feld, Einstand- oder Vorteilseite, erster oder zweiter
+• Ballwechselzähler; jeden Tipp rückgängig machen
+• Tagebuch: Einheit, Stimmung, Energie; dein Fokus, was geklappt hat, woran du arbeitest
+
+MONATLICHE CHALLENGE
+• Jeden Monat neu: Aufschlag, Ballwechsel, Match und Druck
+• Drei selbstzählende Ziele und eine Medaille für die Vitrine
+
+WIDGETS, STEUERUNG UND SIRI
+• Bilanz-Widget: Home-Bildschirm, StandBy und Sperrbildschirm, mit Platzzeit
+• Form-Widget: letzte zehn Ergebnisse, Aufschlagwerte, Saitenlebensdauer
+• Kontrollzentrum und Aktionstaste (iOS 18): Match zählen, Training starten
+• Siri und Kurzbefehle (auf Englisch): "Score a match in Baseline Ledger", "What's my record in Baseline Ledger"
+
+BASELINE LEDGER PRO (Einmalkauf)
+• Momentum: Verlauf jedes live gezählten Matches, Punkt für Punkt
+• Clutch: Bilanz in Tiebreaks, Entscheidungssätzen und bei Breakbällen
+• Siegquote nach Belag, erste Aufschläge im Zeitverlauf, Winner gegen Fehler
+• Aufschlagplatzierung je Seite, Quote im Feld je Schlag, Fehlerarten
+• Alle Schläger, Tabellenexport, Form-Widget
+
+BASELINE LEDGER PLUS (Abo)
+Alles aus Pro, dazu:
+• Jede Woche ein neuer Trainingsplan aus deinen Zahlen, auf dem Handy erstellt: schwächster Schlag, häufigster Fehler, erster Aufschlag, Doppelfehler, Breakbälle. Vier Übungen mit Zielen, per Tipp startbar
+• Druckpunkte aus live gezählten Matches: Aufschlagspiele, Breaks, 30 beide, Einstand, erste Punkte, Spielbälle, Tiebreak, mit klarer Analyse, wo knappe Spiele kippen
+• Alle Platzdesigns im Abo: Red Clay, Lawn, Hard Court, Night Session, je mit eigenem App-Symbol
+• 10 Scouting-Berichte und 10 Match-Poster pro Monat
+• iCloud-Sicherung und Wiederherstellung
+
+EXTRAS
+• Scouting-Berichte und Match-Poster im Dreierpack
+• Platzdesigns: App und Widgets neu eingefärbt, mit passendem Symbol
+
+AUSRÜSTUNG
+• Schläger mit Saite, Spannung und Bespannungsdatum; Saitenstunden und Hinweis zum Neubespannen
+
+Dauerhaft kostenlos: Training, Live- und Sperrbildschirm-Zählung, Tagebuch, Matches, direkter Vergleich, Challenge und ein Schläger. Baseline Ledger oder Pro schon gekauft? Bleibt freigeschaltet. Kein Konto, keine Werbung, kein Tracking: Alles bleibt auf deinem Handy.
+
+ABO-BEDINGUNGEN
+Baseline Ledger Plus ist ein optionales Abo mit automatischer Verlängerung, monatlich oder jährlich. Das Jahresabo kann für Neukunden mit einer kostenlosen Testwoche beginnen. Die Zahlung erfolgt über deine Apple-ID bei Kaufbestätigung oder am Ende der kostenlosen Testphase. Das Abo verlängert sich automatisch zum gleichen Preis, wenn die automatische Verlängerung nicht mindestens 24 Stunden vor Ende des aktuellen Zeitraums deaktiviert wird. Verwalten oder kündigen jederzeit in den Abo-Einstellungen deiner Apple-ID. Ein ungenutzter Teil der Testphase verfällt mit Abschluss eines Abos.
+
+Nutzungsbedingungen (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Datenschutzrichtlinie: https://tensorust.com/apps/baseline-ledger/privacy/

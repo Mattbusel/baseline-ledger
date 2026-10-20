@@ -1,0 +1,1 @@
+puntuación,partido,estadísticas,entrenamiento,saque,raqueta,cordaje,club,liga,dobles,tiebreak,pista

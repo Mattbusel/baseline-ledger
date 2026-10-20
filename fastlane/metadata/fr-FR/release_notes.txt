@@ -1,0 +1,13 @@
+La plus grosse mise à jour de Baseline Ledger à ce jour.
+
+• Score en direct : touchez qui a gagné chaque point, et le score, les chiffres au service et les balles de break se remplissent tout seuls. Tie-breaks, super tie-breaks et point décisif inclus
+• Score depuis l'écran verrouillé : boutons Gagné, Perdu et Faute sur le score en direct, aussi dans la Dynamic Island
+• Un match en cours est enregistré après chaque point : fermer l'app ne le fait jamais perdre
+• Face-à-face : votre bilan contre chaque adversaire, avec vos propres notes de scouting
+• Rapports de scouting avant une revanche, et affiches de match à partager
+• Défi du mois : Service, Échange, Match et Pression, avec médailles
+• Widgets pour l'écran verrouillé, plus des boutons dans le centre de contrôle et Siri : "Score a match in Baseline Ledger"
+• Nouveau : Baseline Ledger Plus, avec un nouveau plan d'entraînement chaque semaine construit à partir de vos chiffres, les points sous pression (jeux de service tenus, breaks, points à égalité), toutes les finitions de court, 10 rapports et affiches par mois et la sauvegarde iCloud
+• Finitions de court : Red Clay, Lawn, Hard Court et Night Session, chacune avec une icône assortie
+
+Tout ce que vous avez enregistré est conservé, et Pro reste à vous.

@@ -1,0 +1,60 @@
+Baseline Ledger: segnapunti di tennis, diario di allenamento e statistiche partita, in nero e oro.
+
+PUNTEGGIO DAL VIVO
+• Due grandi pulsanti: punto tuo, punto loro. Parità, vantaggio, tie-break, match tie-break e killer point si contano da soli
+• Fallo per la seconda, oppure ace, vincente o tuo errore
+• % di prime, punti al servizio, palle break, vincenti ed errori: tutto si compila da solo
+• Dalla schermata di blocco: pulsanti Vinto, Perso e Fallo, anche nella Dynamic Island
+• Ogni punto è salvato e annullabile; finisci il set dopo
+
+TESTA A TESTA
+• Bilancio, set vinti e servizio contro ogni avversario
+• Le tue note su ogni giocatore
+• Report per la rivincita: bilancio, servizio e nervi, cosa ha funzionato, piano in tre punti
+
+ALLENAMENTO IN CAMPO
+• Dritto, rovescio, servizio, risposta, volée, smash, slice, palla corta o gioco a punti
+• Ogni palla: dentro, vincente, rete, lunga, larga o di telaio
+• Servizi: dove cade nel quadrato, lato parità o vantaggio, prima o seconda
+• Contatore degli scambi; annulla qualsiasi tocco
+• Diario: sessione, umore, energia; il tuo spunto, cosa è andato bene, su cosa lavorare
+
+SFIDA DEL MESE
+• Ogni mese una nuova sfida: Servizio, Scambio, Partita e Pressione
+• Tre obiettivi che si contano da soli e una medaglia in bacheca
+
+WIDGET, CONTROLLI E SIRI
+• Widget Bilancio: schermata Home, StandBy e schermata di blocco, con ore in campo
+• Widget Forma: ultimi dieci risultati, servizio e durata delle corde
+• Centro di Controllo e tasto Azione (iOS 18): Segna una partita, Inizia a palleggiare
+• Siri e Comandi Rapidi (in inglese): "Score a match in Baseline Ledger", "What's my record in Baseline Ledger"
+
+BASELINE LEDGER PRO (acquisto unico)
+• Momentum: ogni partita dal vivo, punto per punto
+• Clutch: bilancio in tie-break, set decisivi e palle break
+• % di vittorie per superficie, % di prime nel tempo, vincenti contro errori
+• Dove cadono i servizi su ogni lato, % in gioco per colpo e come sbagli
+• Tutte le racchette, export in foglio di calcolo, widget Forma
+
+BASELINE LEDGER PLUS (abbonamento)
+Tutto quello di Pro, più:
+• Ogni settimana un piano creato sul tuo telefono dai tuoi numeri: colpo più debole, errore più frequente, prima, doppi falli, palle break. Quattro esercizi con obiettivi, avviabili con un tocco
+• Punti di pressione dalle partite dal vivo: servizi tenuti, break, 30 pari, parità, primi punti, game point e tie-break, e dove scivolano i game combattuti, spiegato chiaramente
+• Tutte le finiture del campo finché sei abbonato: Red Clay, Lawn, Hard Court e Night Session, ognuna con la sua icona
+• 10 report di scouting e 10 poster al mese
+• Backup e ripristino su iCloud
+
+EXTRA
+• Report e poster della partita, in pacchetti da tre
+• Finiture del campo: ricolorano l'app e i widget, con icona abbinata
+
+ATTREZZATURA
+• Racchette con corde, tensione e data dell'incordatura; ore sulle corde e avviso per reincordare
+
+Gratis per sempre: allenamenti, punteggio dal vivo e dalla schermata di blocco, diario, partite, testa a testa, sfida del mese e una racchetta. Hai già acquistato Baseline Ledger o Pro? Resta sbloccato. Niente account, pubblicità o tracciamento: tutto resta sul tuo telefono.
+
+TERMINI DELL'ABBONAMENTO
+Baseline Ledger Plus è un abbonamento facoltativo con rinnovo automatico, mensile o annuale. Il piano annuale può iniziare con una settimana di prova gratuita per i nuovi abbonati. Il pagamento è addebitato sul tuo ID Apple alla conferma dell'acquisto o al termine della prova gratuita. L'abbonamento si rinnova automaticamente allo stesso prezzo, salvo disattivazione del rinnovo automatico almeno 24 ore prima della fine del periodo in corso. Gestiscilo o annullalo quando vuoi nelle impostazioni degli abbonamenti del tuo ID Apple. La parte non utilizzata di una prova gratuita si perde quando ti abboni.
+
+Termini d'uso (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Informativa sulla privacy: https://tensorust.com/apps/baseline-ledger/privacy/

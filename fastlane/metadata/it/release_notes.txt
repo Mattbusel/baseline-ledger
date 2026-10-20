@@ -1,0 +1,13 @@
+Il più grande aggiornamento di Baseline Ledger finora.
+
+• Punteggio dal vivo: tocca chi ha vinto ogni punto, e punteggio, numeri al servizio e palle break si compilano da soli. Tie-break, match tie-break e killer point inclusi
+• Punteggio dalla schermata di blocco: pulsanti Vinto, Perso e Fallo sul punteggio dal vivo, anche nella Dynamic Island
+• Una partita in corso viene salvata dopo ogni punto, quindi chiudere l'app non la fa mai perdere
+• Testa a testa: il tuo bilancio contro ogni avversario, con le tue note di scouting
+• Report di scouting prima di una rivincita e poster della partita da condividere
+• Sfida del mese: Servizio, Scambio, Partita e Pressione, con medaglie
+• Widget per la schermata di blocco, più pulsanti nel Centro di Controllo e Siri: "Score a match in Baseline Ledger"
+• Novità: Baseline Ledger Plus, con un nuovo piano di allenamento ogni settimana basato sui tuoi numeri, punti di pressione (tenere il servizio, strappare il break, punti sulla parità), tutte le finiture del campo, 10 report e poster al mese e backup su iCloud
+• Finiture del campo: Red Clay, Lawn, Hard Court e Night Session, ognuna con un'icona abbinata
+
+Tutto ciò che hai registrato resta, e Pro resta tuo.

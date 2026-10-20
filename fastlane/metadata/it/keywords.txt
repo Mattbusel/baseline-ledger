@@ -1,0 +1,1 @@
+segnapunti,partita,allenamento,servizio,racchetta,corde,incordatura,circolo,torneo,doppio,tiebreak

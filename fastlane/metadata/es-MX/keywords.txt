@@ -1,0 +1,1 @@
+puntaje,puntos,partido,entrenamiento,saque,raqueta,cuerdas,club,liga,dobles,tiebreak,diario,cancha
