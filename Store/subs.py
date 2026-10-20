@@ -143,7 +143,7 @@ def create():
                          "relationships": {"subscription": {"data": {"type": "subscriptions", "id": sid}},
                                            "availableTerritories": {"data": [{"type": "territories", "id": t} for t in terr]}}}})
             print("  availability", "ok" if r else "FAILED")
-        prices = asc.call("GET", f"/v1/subscriptions/{sid}/prices", params={"limit": 200})
+        prices = asc.call("GET", f"/v1/subscriptions/{sid}/prices", params={"limit": 200, "include": "territory"})
         if len(prices["data"]) < 150:
             pts = asc.call("GET", f"/v1/subscriptions/{sid}/pricePoints", params={"filter[territory]": "USA", "limit": 200})
             usa = None
@@ -156,7 +156,7 @@ def create():
                 print("  no USA price point", usd); continue
             eq = [usa]
             link = f"/v1/subscriptionPricePoints/{usa['id']}/equalizations"
-            params = {"limit": 200}
+            params = {"limit": 200, "include": "territory"}
             while link:
                 page = asc.call("GET", link, params=params)
                 params = None
@@ -164,21 +164,29 @@ def create():
                 link = page.get("links", {}).get("next")
             done_terr = set()
             for p in prices["data"]:
-                done_terr.add(p["id"])
+                t = (p.get("relationships", {}).get("territory", {}).get("data") or {}).get("id")
+                if t:
+                    done_terr.add(t)
             ok = 0
             for p in eq:
+                t = (p.get("relationships", {}).get("territory", {}).get("data") or {}).get("id")
+                if t and t in done_terr:
+                    continue
                 r = asc.call("POST", "/v1/subscriptionPrices", {"data": {"type": "subscriptionPrices",
                              "attributes": {"preserveCurrentPrice": False, "startDate": None},
                              "relationships": {"subscription": {"data": {"type": "subscriptions", "id": sid}},
                                                "subscriptionPricePoint": {"data": {"type": "subscriptionPricePoints", "id": p["id"]}}}}}, quiet=True)
                 ok += 1 if r else 0
-            print(f"  prices: {ok}/{len(eq)} territories at USD {usd} equivalents")
+            print(f"  prices: {ok} new, {len(done_terr)} already set, of {len(eq)} territories at USD {usd} equivalents")
         if suffix == "plus.yearly":
-            intro = asc.call("GET", f"/v1/subscriptions/{sid}/introductoryOffers", params={"limit": 200})
+            intro = asc.call("GET", f"/v1/subscriptions/{sid}/introductoryOffers", params={"limit": 200, "include": "territory"})
             if len(intro["data"]) < 150:
                 terr = terr or territories()
+                have_t = {(o.get("relationships", {}).get("territory", {}).get("data") or {}).get("id") for o in intro["data"]}
                 ok = 0
                 for t in terr:
+                    if t in have_t:
+                        continue
                     r = asc.call("POST", "/v1/subscriptionIntroductoryOffers", {"data": {"type": "subscriptionIntroductoryOffers",
                                  "attributes": {"duration": "ONE_WEEK", "offerMode": "FREE_TRIAL", "numberOfPeriods": 1, "startDate": None, "endDate": None},
                                  "relationships": {"subscription": {"data": {"type": "subscriptions", "id": sid}},

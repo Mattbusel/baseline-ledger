@@ -12,7 +12,7 @@ struct GearView: View {
                 Spacer()
                 Button {
                     // One racquet is free; a second frame is Pro. Racquets already added stay.
-                    guard pro.unlocked || ledger.racquets.isEmpty else { pro.ask(.racquets); return }
+                    guard pro.has || ledger.racquets.isEmpty else { pro.ask(.racquets); return }
                     editing = Racquet(name: "", mains: "", crosses: "", mainTension: 52, crossTension: 50, strung: .now)
                 } label: {
                     Image(systemName: "plus").font(.body(18, .semibold)).foregroundStyle(Gold.ink)
@@ -36,6 +36,8 @@ struct GearView: View {
                 Text("Your first racquet is the one in use. Long-press another to make it your main.")
                     .font(.body(12)).foregroundStyle(Gold.muted).padding(.horizontal, 6)
             }
+            SectionTitle(title: "Your ledger")
+            BackupCard()
         }
         .sheet(item: $editing) { r in RacquetEditor(racquet: r).presentationBackground(Gold.ink) }
     }

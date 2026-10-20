@@ -47,7 +47,7 @@ struct Court: Identifiable, Hashable {
         Color(red: Double((hex >> 16) & 0xFF) / 255, green: Double((hex >> 8) & 0xFF) / 255, blue: Double(hex & 0xFF) / 255)
     }
     static let all: [Court] = [
-        Court(id: "gold", name: "Gold Leaf", blurb: "The original. Free.", symbol: "trophy.fill",
+        Court(id: "gold", name: "Gold Leaf", blurb: "The original, in gold leaf.", symbol: "trophy.fill",
               leaf: rgb(0xD4AF37), pale: rgb(0xF7E7B0), deep: rgb(0x9C7A22), bronze: rgb(0x6B4F1A),
               band: [rgb(0x9E7824), rgb(0xF7E6A3), rgb(0xCCA338), rgb(0xFFF0BD), rgb(0xA88029)]),
         Court(id: "clay", name: "Red Clay", blurb: "Crushed brick, long rallies, sliding into the backhand.", symbol: "square.stack.3d.down.forward.fill",

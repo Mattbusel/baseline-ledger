@@ -16,7 +16,13 @@ final class Pro {
     /// The first build that has Pro in it. Anything earlier was sold with every feature.
     static let firstFreemiumBuild = 2
 
-    enum Reason: String, Identifiable { case stats, export, racquets, settings; var id: String { rawValue } }
+    enum Reason: String, Identifiable {
+        case stats, export, racquets, settings
+        // 1.2: things only Baseline Ledger Plus has.
+        case plan, pressure, backup, plus
+        var id: String { rawValue }
+        var plusOnly: Bool { [.plan, .pressure, .backup, .plus].contains(self) }
+    }
 
     private(set) var unlocked: Bool
     private(set) var grandfathered = false
@@ -24,6 +30,10 @@ final class Pro {
     var busy = false
     var message: String?
     var paywall: Reason? = nil
+    /// Set by the app from Plus: a subscriber gets everything Pro has without buying it.
+    var plusActive = false
+    /// Pro features are open: bought, grandfathered, or included in Plus.
+    var has: Bool { unlocked || plusActive }
 
     private var updates: Task<Void, Never>?
     private let key = "baselineledger.pro.unlocked"
@@ -42,7 +52,9 @@ final class Pro {
 
     var price: String { product?.displayPrice ?? "$4.99" }
 
-    func ask(_ why: Reason) { if !unlocked { paywall = why } }
+    func ask(_ why: Reason) {
+        if why.plusOnly ? !plusActive : !has { paywall = why }
+    }
 
     func refresh() async {
         guard !forced else { return }
@@ -116,7 +128,7 @@ final class Pro {
 // MARK: - What Pro adds, in this app's words
 
 enum ProCopy {
-    static let pitch = "Logging stays free forever. Pro turns the ledger into a stat book."
+    static let pitch = "Logging, live scoring and head to head stay free forever. Plus turns the ledger into a coach."
     static let short = "The full stat book, momentum and clutch, every racquet, the Form widget, CSV export."
     static let features: [(icon: String, title: String, body: String)] = [
         ("chart.line.uptrend.xyaxis", "Serve and error trends", "First serve percentage and winners against errors, match by match."),
@@ -131,6 +143,10 @@ enum ProCopy {
         switch r {
         case .export: return "Take your ledger anywhere."
         case .racquets: return "Keep every frame fresh."
+        case .plan: return "A new plan every week."
+        case .pressure: return "Win the points that matter."
+        case .backup: return "Never lose the ledger."
+        case .plus: return "Train like you have a coach."
         default: return "Read your game like a pro."
         }
     }
@@ -185,111 +201,17 @@ func csvRow(_ fields: [String]) -> String {
     }.joined(separator: ",")
 }
 
-// MARK: - Paywall
-
-struct PaywallView: View {
-    @Environment(Pro.self) private var pro
-    @Environment(Ledger.self) private var ledger
-    @Environment(\.dismiss) private var dismiss
-    let reason: Pro.Reason
-    @State private var shown = false
-
-    var body: some View {
-        ZStack {
-            LacquerBackground()
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 22) {
-                    SheetHeader(eyebrow: Pro.name, title: ProCopy.headline(reason)) { dismiss() }
-                        .padding(.horizontal, -20)
-                    Text(ProCopy.pitch).font(.body(15)).foregroundStyle(Gold.muted)
-                        .fixedSize(horizontal: false, vertical: true)
-                    teaser
-                    VStack(alignment: .leading, spacing: 16) {
-                        ForEach(ProCopy.features, id: \.title) { f in feature(f.icon, f.title, f.body) }
-                    }
-                    .card()
-                    priceBlock
-                    if let m = pro.message {
-                        Text(m).font(.body(13, .semibold)).foregroundStyle(Gold.pale)
-                            .frame(maxWidth: .infinity).multilineTextAlignment(.center)
-                    }
-                    FoilButton(pro.busy ? "One moment" : "Unlock Pro for \(pro.price)", icon: "lock.open.fill") {
-                        Task { await pro.buy() }
-                    }
-                    .disabled(pro.busy)
-                    HStack(spacing: 12) {
-                        GhostButton("Restore purchase", icon: "arrow.clockwise") { Task { await pro.restore() } }
-                        GhostButton("Not now") { dismiss() }.frame(width: 120)
-                    }
-                    Text("One payment, yours for good. No subscription. Family Sharing works. Everything you have logged stays yours, Pro or not.")
-                        .font(.body(11.5)).foregroundStyle(Gold.faint).fixedSize(horizontal: false, vertical: true)
-                }
-                .padding(.horizontal, 20).padding(.top, 22).padding(.bottom, 40)
-            }
-        }
-        .onAppear { withAnimation(.spring(response: 0.7, dampingFraction: 0.65).delay(0.15)) { shown = true } }
-        .onChange(of: pro.unlocked) { _, now in if now { dismiss() } }
-    }
-
-    private var teaser: some View {
-        let t = ledger.proTeaser
-        let lo = (t.values.min() ?? 0) - 2, hi = (t.values.max() ?? 1) + 2
-        return VStack(alignment: .leading, spacing: 12) {
-            Eyebrow(t.label)
-            Chart(Array(t.values.enumerated()), id: \.offset) { item in
-                AreaMark(x: .value("i", item.offset), yStart: .value("lo", lo), yEnd: .value("v", item.element))
-                    .foregroundStyle(LinearGradient(colors: [Gold.leaf.opacity(0.3), .clear], startPoint: .top, endPoint: .bottom))
-                    .interpolationMethod(.monotone)
-                LineMark(x: .value("i", item.offset), y: .value("v", item.element))
-                    .foregroundStyle(Gold.foil).lineStyle(StrokeStyle(lineWidth: 2.4, lineCap: .round))
-                    .interpolationMethod(.monotone)
-            }
-            .chartYScale(domain: lo...hi)
-            .chartXAxis(.hidden).chartYAxis(.hidden)
-            .frame(height: 120)
-            .blur(radius: 4)
-            .overlay { ProSeal(size: 84).scaleEffect(shown ? 1 : 0.3).rotationEffect(.degrees(shown ? 0 : -30)) }
-        }
-        .card()
-    }
-
-    private var priceBlock: some View {
-        HStack(alignment: .center) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(pro.price).font(.figure(40, .light)).foil()
-                Text("ONCE. NOT A MONTH.").font(.body(10.5, .semibold)).tracking(2).foregroundStyle(Gold.muted)
-            }
-            Spacer()
-            Text("No\nsubscription").font(.display(14).italic()).multilineTextAlignment(.trailing).foregroundStyle(Gold.pale)
-                .padding(.horizontal, 12).padding(.vertical, 8)
-                .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Gold.hairline, style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
-        }
-        .card()
-    }
-
-    private func feature(_ icon: String, _ title: String, _ body: String) -> some View {
-        HStack(alignment: .top, spacing: 14) {
-            Image(systemName: icon).font(.body(15, .semibold)).foil()
-                .frame(width: 38, height: 38).background(Circle().fill(Gold.lacquerHi))
-                .overlay(Circle().strokeBorder(Gold.hairline, lineWidth: 0.8))
-            VStack(alignment: .leading, spacing: 3) {
-                Text(title).font(.display(18, .medium)).foregroundStyle(Gold.ivory)
-                Text(body).font(.body(13)).foregroundStyle(Gold.muted).fixedSize(horizontal: false, vertical: true)
-            }
-        }
-    }
-}
-
 /// A foil wax seal with a lock in it.
 struct ProSeal: View {
     var size: CGFloat = 90
+    var label = "PRO"
     var body: some View {
         ZStack {
             Circle().fill(Gold.foil)
             Circle().strokeBorder(Gold.ink.opacity(0.35), lineWidth: 1).padding(size * 0.08)
             VStack(spacing: 1) {
                 Image(systemName: "lock.fill").font(.system(size: size * 0.2, weight: .bold))
-                Text("PRO").font(.body(size * 0.13, .bold)).tracking(2)
+                Text(label).font(.body(size * 0.13, .bold)).tracking(2)
             }
             .foregroundStyle(Gold.ink)
         }
@@ -315,12 +237,15 @@ struct LockedSection<Content: View>: View {
                 .blur(radius: 10).allowsHitTesting(false).accessibilityHidden(true)
                 .overlay(LinearGradient(colors: [Gold.ink.opacity(0.2), Gold.ink.opacity(0.9)], startPoint: .top, endPoint: .bottom))
             VStack(spacing: 16) {
-                ProSeal(size: 96)
+                ProSeal(size: 96, label: reason.plusOnly ? "PLUS" : "PRO")
                 Text(title).font(.display(28)).foregroundStyle(Gold.ivory).multilineTextAlignment(.center)
                 Text(pitch).font(.body(14.5)).foregroundStyle(Gold.muted).multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
-                FoilButton("See \(Pro.name)", icon: "sparkles") { pro.ask(reason) }
-                Text("\(pro.price) once. Your ledger stays free.").font(.body(12)).foregroundStyle(Gold.faint)
+                FoilButton(reason.plusOnly ? "See \(Plus.name)" : "See the plans", icon: "sparkles") { pro.ask(reason) }
+                if !Shots.on {
+                    Text(reason.plusOnly ? "Included in Plus. Your ledger stays yours." : "Pro, or Plus with everything. Your ledger stays yours.")
+                        .font(.body(12)).foregroundStyle(Gold.faint)
+                }
             }
             .padding(.horizontal, 20).padding(.top, 60)
         }
@@ -343,7 +268,7 @@ struct ExportCard: View {
                 Text("Spreadsheet files for Numbers, Excel or Sheets").font(.body(12)).foregroundStyle(Gold.muted)
             }
             Spacer()
-            if pro.unlocked {
+            if pro.has {
                 ShareLink(items: files) {
                     Image(systemName: "square.and.arrow.up").font(.body(16, .bold)).foregroundStyle(Gold.ink)
                         .frame(width: 44, height: 44).background(Circle().fill(Gold.foil))
@@ -357,41 +282,7 @@ struct ExportCard: View {
             }
         }
         .card(padding: 14)
-        .task(id: pro.unlocked) { if pro.unlocked { files = ledger.exportCSV() } }
+        .task(id: pro.has) { if pro.has { files = ledger.exportCSV() } }
     }
 }
 
-/// The Pro status card on Home, with Restore always in reach.
-struct ProCard: View {
-    @Environment(Pro.self) private var pro
-    var body: some View {
-        HStack(spacing: 14) {
-            ZStack {
-                Circle().fill(pro.unlocked ? AnyShapeStyle(Gold.foil) : AnyShapeStyle(Gold.lacquerHi))
-                Image(systemName: pro.unlocked ? "checkmark" : "lock.fill").font(.body(13, .bold))
-                    .foregroundStyle(pro.unlocked ? AnyShapeStyle(Gold.ink) : AnyShapeStyle(Gold.foil))
-            }
-            .frame(width: 40, height: 40)
-            VStack(alignment: .leading, spacing: 3) {
-                Text(pro.unlocked ? Pro.name : "\(Pro.name), \(pro.price) once").font(.display(17, .medium)).foregroundStyle(Gold.ivory)
-                Text(pro.unlocked ? (pro.grandfathered ? "Unlocked. Thanks for buying the ledger early." : "Unlocked. Thank you.") : ProCopy.short)
-                    .font(.body(12)).foregroundStyle(Gold.muted)
-                if let m = pro.message, pro.paywall == nil { Text(m).font(.body(11.5, .semibold)).foregroundStyle(Gold.pale) }
-            }
-            Spacer(minLength: 6)
-            if !pro.unlocked {
-                VStack(alignment: .trailing, spacing: 8) {
-                    Button { pro.ask(.settings) } label: {
-                        Text("SEE").font(.body(12, .bold)).tracking(1.5).foregroundStyle(Gold.ink)
-                            .padding(.horizontal, 14).padding(.vertical, 8).background(Capsule().fill(Gold.foil))
-                    }
-                    .buttonStyle(PressStyle())
-                    Button { Task { await pro.restore() } } label: {
-                        Text("Restore").font(.body(11, .semibold)).foregroundStyle(Gold.muted).underline()
-                    }
-                }
-            }
-        }
-        .card(padding: 14)
-    }
-}

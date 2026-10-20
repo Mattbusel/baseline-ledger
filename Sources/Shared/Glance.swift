@@ -1,4 +1,5 @@
 import ActivityKit
+import AppIntents
 import SwiftUI
 import WidgetKit
 
@@ -45,6 +46,8 @@ struct MatchActivity: ActivityAttributes {
         var pointThem: String
         var iServe: Bool
         var status: String
+        var secondServe = false
+        var over = false
     }
     var opponent: String
 }
@@ -131,7 +134,8 @@ struct LockedGlanceView: View {
     }
 }
 
-/// The Lock Screen card for a match being scored.
+/// The Lock Screen card for a match being scored, with Won, Lost and Fault buttons so a point can be
+/// scored between rallies without unlocking the phone.
 struct MatchLiveView: View {
     let opponent: String
     let s: MatchActivity.ContentState
@@ -141,11 +145,32 @@ struct MatchLiveView: View {
                 Text(opponent.isEmpty ? "LIVE MATCH" : "VS \(opponent.uppercased())").font(.body(10, .semibold)).tracking(1.4).foregroundStyle(Gold.muted).lineLimit(1)
                 Spacer()
                 if !s.status.isEmpty { Text(s.status.uppercased()).font(.body(9.5, .bold)).tracking(1.2).foregroundStyle(Gold.leaf) }
+                else if s.secondServe { Text("2ND SERVE").font(.body(9.5, .bold)).tracking(1.2).foregroundStyle(Gold.pale) }
             }
             line("You", s.me, s.pointMe, serving: s.iServe)
             line("Them", s.them, s.pointThem, serving: !s.iServe)
+            if !s.over {
+                HStack(spacing: 8) {
+                    Button(intent: ScorePointIntent("won")) { pill("Won", icon: "arrow.up", strong: true) }
+                    Button(intent: ScorePointIntent("lost")) { pill("Lost", icon: "arrow.down", strong: false) }
+                    Button(intent: ScorePointIntent("fault")) { pill(s.secondServe ? "Double" : "Fault", icon: "xmark", strong: false) }
+                        .frame(width: 92)
+                }
+                .buttonStyle(.plain)
+                .padding(.top, 2)
+            }
         }
         .padding(16)
+    }
+    private func pill(_ t: String, icon: String, strong: Bool) -> some View {
+        HStack(spacing: 5) {
+            Image(systemName: icon).font(.system(size: 12, weight: .bold))
+            Text(t).font(.body(14, .semibold))
+        }
+        .foregroundStyle(strong ? Gold.ink : Gold.ivory)
+        .frame(maxWidth: .infinity).frame(height: 36)
+        .background(Capsule().fill(strong ? AnyShapeStyle(Gold.foil) : AnyShapeStyle(Gold.lacquerHi)))
+        .overlay(Capsule().strokeBorder(Gold.leaf.opacity(strong ? 0 : 0.35), lineWidth: 0.8))
     }
     private func line(_ name: String, _ games: [Int], _ point: String, serving: Bool) -> some View {
         HStack(spacing: 8) {
@@ -157,5 +182,40 @@ struct MatchLiveView: View {
             }
             Text(point).font(.figure(19)).foregroundStyle(Gold.leaf).frame(width: 40, alignment: .trailing)
         }
+    }
+}
+
+// MARK: Lock Screen
+
+/// Lock Screen, circular: this week's court time against the target.
+struct WeekRingAccessory: View {
+    let g: Glance
+    var body: some View {
+        Gauge(value: Double(min(g.weekMinutes, g.weeklyTarget)), in: 0...Double(max(1, g.weeklyTarget))) {
+            Image(systemName: "tennisball.fill")
+        } currentValueLabel: {
+            Text("\(g.weekMinutes)").font(.system(size: 14, weight: .semibold, design: .serif))
+        }
+        .gaugeStyle(.accessoryCircular)
+        .accessibilityLabel("\(g.weekMinutes) of \(g.weeklyTarget) minutes on court this week")
+    }
+}
+
+/// Lock Screen, rectangular: the record, the streak and the last result.
+struct RecordAccessory: View {
+    let g: Glance
+    var body: some View {
+        VStack(alignment: .leading, spacing: 1) {
+            HStack(spacing: 4) {
+                Image(systemName: "tennisball.fill").font(.system(size: 11, weight: .bold))
+                Text("RECORD").font(.system(size: 11, weight: .bold)).tracking(1)
+            }
+            .opacity(0.8)
+            Text("\(g.won)–\(g.lost)" + (g.winStreak > 1 ? " · \(g.winStreak) in a row" : ""))
+                .font(.system(size: 19, weight: .semibold, design: .serif)).lineLimit(1).minimumScaleFactor(0.7)
+            Text(g.lastOpponent.isEmpty ? "\(g.weekMinutes) min on court this week" : "\(g.lastWon ? "Beat" : "Lost to") \(g.lastOpponent) \(g.lastScore)")
+                .font(.system(size: 12)).lineLimit(1).opacity(0.85)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }

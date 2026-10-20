@@ -25,6 +25,7 @@ targets:
       properties:
         com.apple.security.application-groups:
           - group.com.mattbusel.baselineledger
+        com.apple.developer.ubiquity-kvstore-identifier: $(TeamIdentifierPrefix)$(CFBundleIdentifier)
     sources:
       - path: Sources
       - path: Resources/PrivacyInfo.xcprivacy
@@ -56,6 +57,10 @@ targets:
         UIStatusBarStyle: UIStatusBarStyleLightContent
         ITSAppUsesNonExemptEncryption: false
         NSSupportsLiveActivities: true
+        CFBundleURLTypes:
+          - CFBundleURLName: com.mattbusel.baselineledger
+            CFBundleURLSchemes:
+              - baselineledger
   BaselineWidgets:
     type: app-extension
     platform: iOS

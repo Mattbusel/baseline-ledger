@@ -1,4 +1,5 @@
 import SwiftUI
+import TipKit
 
 struct MatchesView: View {
     @Environment(Ledger.self) private var ledger
@@ -39,6 +40,7 @@ struct MatchesView: View {
                     .card(padding: 14, radius: 20)
                 }
                 .buttonStyle(PressStyle())
+                .popoverTip(HeadToHeadTip(), arrowEdge: .top)
             }
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
@@ -240,7 +242,7 @@ struct MatchEditorView: View {
                 Spacer()
                 Text("\(pct(s.pointsWon, s.pointsPlayed))%").font(.figure(15)).foil()
             }
-            if pro.unlocked {
+            if pro.has {
                 MomentumChart(values: s.momentum).frame(height: 100)
                 Text("Above the line you were ahead on points; the steep stretches are the runs.").font(.body(11.5)).foregroundStyle(Gold.muted)
             } else {

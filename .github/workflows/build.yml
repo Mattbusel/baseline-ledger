@@ -43,15 +43,43 @@ jobs:
           # A warm-up launch: the first screenshot after install can come out blank.
           xcrun simctl launch "$udid" com.mattbusel.baselineledger -shot home; sleep 8
           i=0
-          for shot in home score widgets scout opponents poster match clutch setup live shop paywall; do
+          for shot in home score lockscreen plan stats challenge opponents scout match poster clay live setup shop paywall; do
             xcrun simctl terminate "$udid" com.mattbusel.baselineledger || true
             xcrun simctl launch "$udid" com.mattbusel.baselineledger -shot $shot
             sleep 8
             xcrun simctl io "$udid" screenshot "shots/$(printf %02d $i)-$shot.png"
             i=$((i+1))
           done
+      - name: App preview video
+        timeout-minutes: 12
+        continue-on-error: true
+        run: |
+          udid=$UDID
+          xcrun simctl terminate "$udid" com.mattbusel.baselineledger || true
+          data=$(xcrun simctl get_app_container "$udid" com.mattbusel.baselineledger data)
+          rm -f "$data/Documents/demo_done"
+          mkdir -p preview
+          xcrun simctl io "$udid" recordVideo --codec h264 --force preview/raw.mp4 &
+          rec=$!
+          sleep 3
+          xcrun simctl launch "$udid" com.mattbusel.baselineledger -demoPreview
+          for i in $(seq 1 120); do [ -f "$data/Documents/demo_done" ] && break; sleep 0.5; done
+          sleep 0.5
+          kill -INT $rec 2>/dev/null || true
+          wait $rec 2>/dev/null || true
+          command -v ffmpeg >/dev/null || brew install ffmpeg
+          ffprobe -v error -show_entries format=duration -of csv=p=0 preview/raw.mp4 || true
+          # 6.9-inch App Preview: 886x1920, 30 fps, H.264 + a (silent) AAC track, 15 to 30 seconds.
+          ffmpeg -y -ss 3.2 -i preview/raw.mp4 -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100             -map 0:v -map 1:a -t 29 -vf "scale=886:-2,crop=886:1920,fps=30,format=yuv420p"             -c:v libx264 -profile:v high -level 4.0 -b:v 10M -maxrate 12M -bufsize 20M -c:a aac -b:a 128k -movflags +faststart preview/preview.mp4
+          ffprobe -v error -show_entries stream=codec_name,width,height,r_frame_rate:format=duration -of compact preview/preview.mp4
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: shots
           path: shots
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: preview
+          path: preview/preview.mp4
+          if-no-files-found: warn

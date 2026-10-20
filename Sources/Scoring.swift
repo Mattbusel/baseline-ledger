@@ -1,194 +1,33 @@
 import ActivityKit
 import Charts
 import SwiftUI
-
-// MARK: - The rules
-
-/// The score of a match after replaying its points. Everything is derived from the point list,
-/// so undo is exact and the stats can never drift from the score.
-struct ScoreState {
-    var sets: [SetScore] = [SetScore(me: 0, them: 0)]
-    var gameMe = 0
-    var gameThem = 0
-    var tiebreak = false
-    var matchTiebreak = false
-    var iServe = true
-    var over = false
-    var setsMe = 0
-    var setsThem = 0
-    /// Running points won minus points lost, after each point.
-    var momentum: [Int] = []
-
-    var aces = 0, doubleFaults = 0
-    var firstServesIn = 0, firstServesTotal = 0, firstServePointsWon = 0
-    var secondServePointsWon = 0, secondServePointsPlayed = 0
-    var breakPointsWon = 0, breakPointChances = 0, breakPointsSaved = 0, breakPointsFaced = 0
-    var winners = 0, unforcedErrors = 0
-    var pointsWon = 0, pointsPlayed = 0
-
-    var won: Bool { setsMe > setsThem }
-
-    /// On their serve, one point from winning the game.
-    func breakPoint(_ f: LiveFormat) -> Bool {
-        !tiebreak && !iServe && (f.noAd ? gameMe >= 3 && gameThem <= 3 && gameMe >= gameThem : gameMe >= 3 && gameMe > gameThem)
-    }
-    /// On your serve, one point from losing the game.
-    func facingBreak(_ f: LiveFormat) -> Bool {
-        !tiebreak && iServe && (f.noAd ? gameThem >= 3 && gameMe <= 3 && gameThem >= gameMe : gameThem >= 3 && gameThem > gameMe)
-    }
-
-    /// The current game as it is called out: 15, 30, 40, Ad, or tiebreak points.
-    func call(_ f: LiveFormat) -> (me: String, them: String) {
-        if tiebreak { return ("\(gameMe)", "\(gameThem)") }
-        let names = ["0", "15", "30", "40"]
-        if gameMe >= 3 && gameThem >= 3 {
-            if f.noAd || gameMe == gameThem { return ("40", "40") }
-            return gameMe > gameThem ? ("AD", "") : ("", "AD")
-        }
-        return (names[min(gameMe, 3)], names[min(gameThem, 3)])
-    }
-
-    var status: String {
-        if over { return won ? "Match won" : "Match lost" }
-        if matchTiebreak { return "Match tiebreak" }
-        if tiebreak { return "Tiebreak" }
-        return ""
-    }
-
-    static func replay(_ points: [PointLog], _ f: LiveFormat) -> ScoreState {
-        var s = ScoreState()
-        s.iServe = f.iServeFirst
-        var tbFirstServerMe = s.iServe
-        var tbPoints = 0
-        var diff = 0
-        for p in points {
-            guard !s.over else { break }
-            s.count(p, f)
-            diff += p.iWon ? 1 : -1
-            s.momentum.append(diff)
-            if p.iWon { s.gameMe += 1 } else { s.gameThem += 1 }
-            let i = s.sets.count - 1
-            if s.tiebreak {
-                tbPoints += 1
-                let target = s.matchTiebreak ? 10 : 7
-                let hi = max(s.gameMe, s.gameThem), gap = abs(s.gameMe - s.gameThem)
-                if hi >= target && gap >= 2 {
-                    let meWon = s.gameMe > s.gameThem
-                    if s.matchTiebreak {
-                        s.sets[i] = SetScore(me: s.gameMe, them: s.gameThem)
-                    } else {
-                        s.sets[i].me += meWon ? 1 : 0
-                        s.sets[i].them += meWon ? 0 : 1
-                        s.sets[i].tiebreak = min(s.gameMe, s.gameThem)
-                    }
-                    // Whoever received the first point of the tiebreak serves the next set.
-                    s.iServe = !tbFirstServerMe
-                    s.endSet(meWon: meWon, f, &tbFirstServerMe, &tbPoints)
-                } else if tbPoints % 2 == 1 {
-                    s.iServe.toggle()
-                }
-            } else {
-                let gameOver = f.noAd ? (s.gameMe == 4 || s.gameThem == 4) && !(s.gameMe >= 3 && s.gameThem >= 3 && s.gameMe == s.gameThem)
-                                      : (max(s.gameMe, s.gameThem) >= 4 && abs(s.gameMe - s.gameThem) >= 2)
-                if gameOver {
-                    let meWon = s.gameMe > s.gameThem
-                    if meWon { s.sets[i].me += 1 } else { s.sets[i].them += 1 }
-                    s.gameMe = 0; s.gameThem = 0
-                    s.iServe.toggle()
-                    let a = s.sets[i].me, b = s.sets[i].them
-                    if (a >= 6 || b >= 6) && abs(a - b) >= 2 || a == 7 || b == 7 {
-                        s.endSet(meWon: a > b, f, &tbFirstServerMe, &tbPoints)
-                    } else if a == 6 && b == 6 {
-                        s.tiebreak = true
-                        tbFirstServerMe = s.iServe
-                        tbPoints = 0
-                    }
-                }
-            }
-        }
-        return s
-    }
-
-    private mutating func endSet(meWon: Bool, _ f: LiveFormat, _ tbFirst: inout Bool, _ tbPoints: inout Int) {
-        if meWon { setsMe += 1 } else { setsThem += 1 }
-        gameMe = 0; gameThem = 0; tiebreak = false; matchTiebreak = false
-        let need = f.bestOf / 2 + 1
-        if setsMe >= need || setsThem >= need { over = true; return }
-        sets.append(SetScore(me: 0, them: 0))
-        if f.bestOf == 3 && f.matchTiebreak && setsMe == 1 && setsThem == 1 {
-            tiebreak = true; matchTiebreak = true
-            tbFirst = iServe; tbPoints = 0
-        }
-    }
-
-    /// Serve, pressure and shot numbers for this point, from your side of the net.
-    private mutating func count(_ p: PointLog, _ f: LiveFormat) {
-        pointsPlayed += 1
-        if p.iWon { pointsWon += 1 }
-        if p.iServed {
-            firstServesTotal += 1
-            if p.kind == .doubleFault {
-                doubleFaults += 1; secondServePointsPlayed += 1
-            } else if p.firstIn {
-                firstServesIn += 1
-                if p.iWon { firstServePointsWon += 1 }
-            } else {
-                secondServePointsPlayed += 1
-                if p.iWon { secondServePointsWon += 1 }
-            }
-            if p.kind == .ace && p.iWon { aces += 1 }
-            if facingBreak(f) { breakPointsFaced += 1; if p.iWon { breakPointsSaved += 1 } }
-        } else if breakPoint(f) {
-            breakPointChances += 1
-            if p.iWon { breakPointsWon += 1 }
-        }
-        if p.kind == .winner && p.iWon { winners += 1 }
-        if p.kind == .error && !p.iWon { unforcedErrors += 1 }
-    }
-
-    /// Write the score and the numbers onto the match.
-    func apply(to m: inout Match) {
-        var s = sets
-        if !over, let last = s.last, last.me == 0, last.them == 0, s.count > 1 { s.removeLast() }
-        m.sets = s
-        m.retired = false
-        m.aces = aces; m.doubleFaults = doubleFaults
-        m.firstServesIn = firstServesIn; m.firstServesTotal = firstServesTotal; m.firstServePointsWon = firstServePointsWon
-        m.secondServePointsWon = secondServePointsWon; m.secondServePointsPlayed = secondServePointsPlayed
-        m.breakPointsWon = breakPointsWon; m.breakPointChances = breakPointChances
-        m.breakPointsSaved = breakPointsSaved; m.breakPointsFaced = breakPointsFaced
-        m.winners = winners; m.unforcedErrors = unforcedErrors
-    }
-}
+import TipKit
 
 // MARK: - Live Activity
 
 /// Keeps the Lock Screen card and the Dynamic Island in step with the scorer. Free for everyone.
+/// Works from whatever activity is running, so a match resumed after a relaunch keeps its card.
 @MainActor
 enum MatchLive {
-    private static var activity: Activity<MatchActivity>?
-
-    static func state(_ s: ScoreState, _ f: LiveFormat) -> MatchActivity.ContentState {
-        let c = s.call(f)
-        return .init(me: s.sets.map(\.me), them: s.sets.map(\.them), pointMe: c.me, pointThem: c.them,
-                     iServe: s.iServe, status: s.breakPoint(f) ? "Break point" : s.facingBreak(f) ? "Break point against" : s.status)
+    static func state(_ s: ScoreState, _ f: LiveFormat, secondServe: Bool = false) -> MatchActivity.ContentState {
+        MatchActivity.ContentState(s, f, secondServe: secondServe)
     }
     static func start(opponent: String, _ s: ScoreState, _ f: LiveFormat) {
-        guard activity == nil, ActivityAuthorizationInfo().areActivitiesEnabled,
-              !ProcessInfo.processInfo.arguments.contains("-shot") else { return }
-        activity = try? Activity.request(attributes: MatchActivity(opponent: opponent),
-                                         content: .init(state: state(s, f), staleDate: .now.addingTimeInterval(5 * 3600)))
+        guard Activity<MatchActivity>.activities.isEmpty, ActivityAuthorizationInfo().areActivitiesEnabled, !Shots.on else { return }
+        _ = try? Activity.request(attributes: MatchActivity(opponent: opponent),
+                                  content: .init(state: state(s, f), staleDate: .now.addingTimeInterval(5 * 3600)))
     }
-    static func update(_ s: ScoreState, _ f: LiveFormat) {
-        guard let a = activity else { return }
-        let st = state(s, f)
-        Task { await a.update(.init(state: st, staleDate: .now.addingTimeInterval(5 * 3600))) }
+    static func update(_ s: ScoreState, _ f: LiveFormat, secondServe: Bool = false) {
+        let st = state(s, f, secondServe: secondServe)
+        for a in Activity<MatchActivity>.activities {
+            Task { await a.update(.init(state: st, staleDate: .now.addingTimeInterval(5 * 3600))) }
+        }
     }
     static func end(_ s: ScoreState?, _ f: LiveFormat) {
-        guard let a = activity else { return }
-        activity = nil
         let final = s.map { state($0, f) }
-        Task { await a.end(final.map { .init(state: $0, staleDate: nil) }, dismissalPolicy: .after(.now.addingTimeInterval(1800))) }
+        for a in Activity<MatchActivity>.activities {
+            Task { await a.end(final.map { .init(state: $0, staleDate: nil) }, dismissalPolicy: final == nil ? .immediate : .after(.now.addingTimeInterval(1800))) }
+        }
     }
 }
 
@@ -204,11 +43,31 @@ struct LiveMatchView: View {
     @State private var started = false
     @State private var secondServe = false
     @State private var confirmLeave = false
+    @Environment(\.scenePhase) private var phase
 
-    init(match: Match) {
+    init(match: Match, secondServe: Bool = false) {
         _match = State(initialValue: match)
         _format = State(initialValue: match.scoring ?? LiveFormat())
-        _started = State(initialValue: !match.points.isEmpty)
+        _started = State(initialValue: !match.points.isEmpty || match.scoring != nil)
+        _secondServe = State(initialValue: secondServe)
+    }
+
+    /// Every change goes to the app group straight away: the match survives the app closing, and the
+    /// Lock Screen buttons score into the same list.
+    private func persist() {
+        guard started, !Shots.on else { return }
+        var m = match
+        m.points = []
+        LiveDraft(matchID: match.id, match: (try? JSONEncoder().encode(m)) ?? Data(), opponent: match.opponent,
+                  format: format, points: match.points, secondServe: secondServe).save()
+    }
+
+    /// Points scored from the Lock Screen while the app was in the background.
+    private func pull() {
+        guard let d = LiveDraft.load(), d.matchID == match.id else { return }
+        if d.points != match.points || d.secondServe != secondServe {
+            withAnimation(.snappy) { match.points = d.points; secondServe = d.secondServe }
+        }
     }
 
     private var score: ScoreState { ScoreState.replay(match.points, format) }
@@ -218,6 +77,8 @@ struct LiveMatchView: View {
             LacquerBackground()
             if started { scorer } else { setup }
         }
+        .onReceive(NotificationCenter.default.publisher(for: LiveDraft.changed)) { _ in pull() }
+        .onChange(of: phase) { _, p in if p == .active { pull() } }
         .onCue { cue in
             switch cue {
             case "score.start": begin()
@@ -285,6 +146,7 @@ struct LiveMatchView: View {
     private func begin() {
         match.scoring = format
         withAnimation(.snappy) { started = true }
+        persist()
         MatchLive.start(opponent: match.opponent, score, format)
         Haptic.done()
     }
@@ -315,6 +177,7 @@ struct LiveMatchView: View {
                 VStack(spacing: 16) {
                     board(s)
                     if s.over { finished(s) } else { pad(s) }
+                    if !s.over { TipView(LockScreenTip()).tipBackground(Gold.lacquer) }
                     if s.momentum.count > 3 { momentum(s) }
                 }
                 .padding(.horizontal, 18).padding(.top, 14).padding(.bottom, 40)
@@ -322,7 +185,7 @@ struct LiveMatchView: View {
         }
         .confirmationDialog("Leave the match?", isPresented: $confirmLeave, titleVisibility: .visible) {
             Button("Save it as it stands") { save() }
-            Button("Discard", role: .destructive) { MatchLive.end(nil, format); dismiss() }
+            Button("Discard", role: .destructive) { MatchLive.end(nil, format); LiveDraft.clear(); dismiss() }
         } message: { Text("Saving keeps the score and every number so far.") }
     }
 
@@ -372,7 +235,10 @@ struct LiveMatchView: View {
                 Spacer()
                 Button {
                     Haptic.tap()
-                    if secondServe { point(!s.iServe, .doubleFault) } else { withAnimation(.snappy) { secondServe = true } }
+                    if secondServe { point(!s.iServe, .doubleFault) } else {
+                        withAnimation(.snappy) { secondServe = true }
+                        persist(); MatchLive.update(s, format, secondServe: true)
+                    }
                 } label: {
                     Text(secondServe ? "Double fault" : "Fault").font(.body(13, .bold)).foregroundStyle(secondServe ? Gold.bad : Gold.ivory)
                         .padding(.horizontal, 14).frame(height: 34)
@@ -461,6 +327,7 @@ struct LiveMatchView: View {
         withAnimation(.snappy) { match.points.append(p); secondServe = false }
         let after = score
         if after.over { Haptic.done() } else if after.setsMe + after.setsThem > s.setsMe + s.setsThem || after.sets.last.map({ $0.me + $0.them }) != s.sets.last.map({ $0.me + $0.them }) { Haptic.thud() } else { Haptic.tap() }
+        persist()
         MatchLive.update(after, format)
     }
 
@@ -468,6 +335,7 @@ struct LiveMatchView: View {
         guard !match.points.isEmpty else { return }
         Haptic.tap()
         withAnimation(.snappy) { _ = match.points.popLast(); secondServe = false }
+        persist()
         MatchLive.update(score, format)
     }
 
@@ -478,7 +346,9 @@ struct LiveMatchView: View {
         s.apply(to: &m)
         ledger.upsert(m)
         MatchLive.end(s, format)
+        LiveDraft.clear()
         Haptic.done()
+        if s.won { router.happyMoment() }
         dismiss()
         // Straight into the match sheet, for the plan, the notes and the poster.
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { router.editingMatch = m }

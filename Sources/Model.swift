@@ -80,18 +80,6 @@ struct PracticeSession: Codable, Identifiable, Hashable {
 enum Surface: String, Codable, CaseIterable { case hard = "Hard", clay = "Clay", grass = "Grass", indoor = "Indoor", carpet = "Carpet" }
 enum Format: String, Codable, CaseIterable { case singles = "Singles", doubles = "Doubles" }
 
-struct SetScore: Codable, Hashable, Identifiable {
-    var id = UUID()
-    var me: Int
-    var them: Int
-    var tiebreak: Int? = nil   // loser's tiebreak points, the way it's written
-    var text: String {
-        if let tiebreak { return "\(me)-\(them)(\(tiebreak))" }
-        return "\(me)-\(them)"
-    }
-    var won: Bool { me > them }
-}
-
 struct Match: Codable, Identifiable, Hashable {
     var id = UUID()
     var date = Date.now
@@ -176,30 +164,6 @@ extension Match {
     }
 }
 
-/// How a point ended, from the point of view of whoever hit the last good ball.
-enum PointKind: String, Codable, CaseIterable {
-    case rally, ace, doubleFault, winner, error
-}
-
-/// One point of a match scored live.
-struct PointLog: Codable, Hashable {
-    var iWon: Bool
-    var iServed: Bool
-    var kind: PointKind = .rally
-    /// The point started on a first serve. False: second serve (or a double fault).
-    var firstIn: Bool = true
-}
-
-/// The rules a live match is scored under.
-struct LiveFormat: Codable, Hashable {
-    /// 1 (one set) or 3.
-    var bestOf: Int = 3
-    var noAd = false
-    /// The deciding set is a 10-point match tiebreak.
-    var matchTiebreak = true
-    var iServeFirst = true
-}
-
 // MARK: gear
 
 struct Racquet: Codable, Identifiable, Hashable {
@@ -266,6 +230,22 @@ final class Ledger {
         let snap = Snapshot(sessions: sessions, matches: matches, racquets: racquets, goals: goals, name: name, scouting: scouting)
         if let d = try? JSONEncoder().encode(snap) { try? d.write(to: url, options: .atomic) }
         didSave?()
+    }
+
+    /// The whole ledger as one file, for the iCloud backup.
+    func snapshotData() -> Data? {
+        try? JSONEncoder().encode(Snapshot(sessions: sessions, matches: matches, racquets: racquets, goals: goals, name: name, scouting: scouting))
+    }
+    /// Replaces the ledger with a backup. False if the data is not a ledger.
+    @discardableResult
+    func restore(snapshot data: Data) -> Bool {
+        guard let s = try? JSONDecoder().decode(Snapshot.self, from: data) else { return false }
+        loading = true
+        sessions = s.sessions; matches = s.matches; racquets = s.racquets; goals = s.goals; name = s.name
+        scouting = s.scouting ?? [:]
+        loading = false
+        save()
+        return true
     }
 
     func upsert(_ s: PracticeSession) {

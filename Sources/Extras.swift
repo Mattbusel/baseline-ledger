@@ -25,10 +25,38 @@ final class Extras {
     var scouts: Int { didSet { d.set(scouts, forKey: "extras.scouts") } }
     var posters: Int { didSet { d.set(posters, forKey: "extras.posters") } }
 
+    /// Plus: every finish while subscribed, and a monthly allowance of reports and posters that tops
+    /// back up to `monthly` on the first of each month (it does not pile up; banked ones are separate).
+    static let monthly = 10
+    var plus = false { didSet { if plus != oldValue { plusChanged() } } }
+    private(set) var plusScouts: Int = 0 { didSet { d.set(plusScouts, forKey: "extras.plusScouts") } }
+    private(set) var plusPosters: Int = 0 { didSet { d.set(plusPosters, forKey: "extras.plusPosters") } }
+
+    static var month: String {
+        let c = Calendar.current.dateComponents([.year, .month], from: .now)
+        return "\(c.year ?? 0)-\(c.month ?? 0)"
+    }
+
+    /// Top up this month's allowance once, then keep the court honest if Plus has lapsed.
+    func plusChanged() {
+        if plus {
+            if d.string(forKey: "extras.plusMonth") != Extras.month {
+                d.set(Extras.month, forKey: "extras.plusMonth")
+                plusScouts = Extras.monthly
+                plusPosters = Extras.monthly
+            }
+        } else if !demo, !ownsCourt(Court.current.id) {
+            Court.apply("gold")
+            WidgetCenter.shared.reloadAllTimelines()
+        }
+    }
+
     init(demo: Bool, locked: Bool = false) {
         self.demo = demo
         scouts = d.integer(forKey: "extras.scouts")
         posters = d.integer(forKey: "extras.posters")
+        plusScouts = d.integer(forKey: "extras.plusScouts")
+        plusPosters = d.integer(forKey: "extras.plusPosters")
         if demo {
             owned = locked ? [] : [Extras.courtID("clay")]
             return
@@ -44,7 +72,7 @@ final class Extras {
     }
 
     func price(_ id: String) -> String { products[id]?.displayPrice ?? (demo ? "$0.99" : "…") }
-    func ownsCourt(_ id: String) -> Bool { id == "gold" || owned.contains(Extras.courtID(id)) }
+    func ownsCourt(_ id: String) -> Bool { id == "gold" || plus || owned.contains(Extras.courtID(id)) }
 
     // MARK: free allowances
 
@@ -56,6 +84,9 @@ final class Extras {
     /// One scouting report a week is free for everyone.
     var freeScoutLeft: Bool { demo || d.string(forKey: "extras.freeScoutWeek") != Extras.week }
     var firstPosterFree: Bool { !d.bool(forKey: "extras.freePosterUsed") }
+    /// Reports and posters ready to use: this month's Plus allowance plus any bought.
+    var scoutsLeft: Int { (plus ? plusScouts : 0) + scouts }
+    var postersLeft: Int { (plus ? plusPosters : 0) + posters }
 
     func loadProducts() async {
         guard !demo, products.count < Extras.allIDs.count else { return }
@@ -130,6 +161,8 @@ final class Extras {
     func spendScout() -> Bool {
         if demo { return true }
         if freeScoutLeft { d.set(Extras.week, forKey: "extras.freeScoutWeek"); return true }
+        if plus { plusChanged() }
+        if plus && plusScouts > 0 { plusScouts -= 1; return true }
         guard scouts > 0 else { return false }
         scouts -= 1
         return true
@@ -139,6 +172,8 @@ final class Extras {
     func spendPoster() -> Bool {
         if demo { return true }
         if firstPosterFree { d.set(true, forKey: "extras.freePosterUsed"); return true }
+        if plus { plusChanged() }
+        if plus && plusPosters > 0 { plusPosters -= 1; return true }
         guard posters > 0 else { return false }
         posters -= 1
         return true
@@ -158,22 +193,22 @@ struct ShopSheet: View {
             LacquerBackground()
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 22) {
-                    SheetHeader(eyebrow: "Extras", title: "Small things,\n99 cents each.") { dismiss() }.padding(.horizontal, -20)
+                    SheetHeader(eyebrow: "Extras", title: Shots.on ? "Make it\nyours." : "Small things,\n99 cents each.") { dismiss() }.padding(.horizontal, -20)
 
                     VStack(spacing: 0) {
                         row(icon: "binoculars.fill", title: "Scouting Reports, 3 for 99¢",
-                            sub: "Before you play someone again: your head-to-head, how your serve and nerve hold up against them, what has worked, and a three-point plan. One a week is free" + (extras.freeScoutLeft ? " (this week's is ready)." : "; you've used this week's.") + " Banked: \(extras.scouts).",
+                            sub: "Before you play someone again: your head-to-head, how your serve and nerve hold up against them, what has worked, and a three-point plan. One a week is free" + (extras.freeScoutLeft ? " (this week's is ready)." : "; you've used this week's.") + " Ready: \(extras.scoutsLeft)" + (extras.plus ? " (Plus tops up \(Extras.monthly) a month)." : "."),
                             id: Extras.scoutsID)
                         Rectangle().fill(Gold.leaf.opacity(0.1)).frame(height: 0.8).padding(.horizontal, 16)
                         row(icon: "photo.artframe", title: "Match Posters, 3 for 99¢",
-                            sub: "A gold-leaf scorecard of a match, with the numbers that won it, to share or frame. " + (extras.firstPosterFree ? "Your first one is free." : "Left: \(extras.posters)."),
+                            sub: "A gold-leaf scorecard of a match, with the numbers that won it, to share or frame. " + (extras.firstPosterFree ? "Your first one is free." : "Left: \(extras.postersLeft)" + (extras.plus ? " (Plus tops up \(Extras.monthly) a month)." : ".")),
                             id: Extras.postersID)
                     }
                     .card(padding: 4)
 
                     VStack(alignment: .leading, spacing: 8) {
                         Eyebrow("Court finishes")
-                        Text("Refinish the whole ledger, the widgets and the app icon in the colours of a court. Yours without Pro.").font(.body(13)).foregroundStyle(Gold.muted)
+                        Text(extras.plus ? "Refinish the whole ledger, the widgets and the app icon in the colours of a court. Every finish is yours with Plus." : "Refinish the whole ledger, the widgets and the app icon in the colours of a court. Yours without Pro, and all four come with Plus.").font(.body(13)).foregroundStyle(Gold.muted)
                     }
                     LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
                         ForEach(Court.all) { c in courtCard(c) }
@@ -201,7 +236,7 @@ struct ShopSheet: View {
             }
             Spacer(minLength: 6)
             Button { Task { await extras.buy(id) } } label: {
-                Group { if extras.busy == id { ProgressView().tint(Gold.ink) } else { Text(extras.price(id)).font(.body(13, .bold)) } }
+                Group { if extras.busy == id { ProgressView().tint(Gold.ink) } else if Shots.on { Image(systemName: "plus").font(.body(13, .bold)) } else { Text(extras.price(id)).font(.body(13, .bold)) } }
                     .foregroundStyle(Gold.ink).padding(.horizontal, 12).frame(height: 32).background(Capsule().fill(Gold.foil))
             }
             .buttonStyle(PressStyle()).disabled(extras.busy != nil)
@@ -227,6 +262,7 @@ struct ShopSheet: View {
                     Spacer()
                     if on { Image(systemName: "checkmark.seal.fill").foregroundStyle(c.leaf) }
                     else if owned { Text("Use").font(.body(12, .bold)).foregroundStyle(c.leaf) }
+                    else if Shots.on { Image(systemName: "lock.fill").font(.body(11)).foregroundStyle(c.leaf) }
                     else { Text(extras.price(Extras.courtID(c.id))).font(.body(11.5, .bold)).foregroundStyle(Gold.ink).padding(.horizontal, 8).frame(height: 22).background(Capsule().fill(LinearGradient(colors: c.band, startPoint: .leading, endPoint: .trailing))) }
                 }
                 Text(c.blurb).font(.body(11)).foregroundStyle(Gold.muted).lineLimit(2, reservesSpace: true)
@@ -291,8 +327,8 @@ struct PosterSheet: View {
                                 .foregroundStyle(Gold.ink).frame(maxWidth: .infinity).frame(height: 56).background(Capsule().fill(Gold.foil))
                         }
                         Text("Made. Save it to Photos from the share sheet.").font(.body(12)).foregroundStyle(Gold.muted).frame(maxWidth: .infinity)
-                    } else if extras.firstPosterFree || extras.posters > 0 {
-                        FoilButton(extras.firstPosterFree ? "Make it · your first is free" : "Make it · \(extras.posters) left", icon: "photo.artframe") { make() }
+                    } else if extras.firstPosterFree || extras.postersLeft > 0 {
+                        FoilButton(extras.firstPosterFree ? "Make it · your first is free" : "Make it · \(extras.postersLeft) left", icon: "photo.artframe") { make() }
                     } else {
                         FoilButton(extras.busy == Extras.postersID ? "One moment" : "3 posters · \(extras.price(Extras.postersID))", icon: "plus") {
                             Task { if await extras.buy(Extras.postersID) { make() } }

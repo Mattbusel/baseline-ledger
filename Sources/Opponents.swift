@@ -169,7 +169,7 @@ struct OpponentDetail: View {
                     .frame(width: 44, height: 44).background(Circle().fill(Gold.foil))
                 VStack(alignment: .leading, spacing: 3) {
                     Text("Scouting report").font(.display(18, .medium)).foregroundStyle(Gold.ivory)
-                    Text(extras.freeScoutLeft ? "This week's free report is ready." : extras.scouts > 0 ? "\(extras.scouts) banked." : "3 more for \(extras.price(Extras.scoutsID)).")
+                    Text(Shots.on ? "Your record, your serve against them, and a plan." : extras.freeScoutLeft ? "This week's free report is ready." : extras.scoutsLeft > 0 ? "\(extras.scoutsLeft) ready." : "3 more for \(extras.price(Extras.scoutsID)), or 10 a month with Plus.")
                         .font(.body(12)).foregroundStyle(Gold.muted)
                 }
                 Spacer()
@@ -343,7 +343,8 @@ struct ClutchCard: View {
 
 // MARK: - Screenshot only
 
-/// The widgets and the live match on a Lock Screen, for the App Store screenshot. The real widgets draw the same views.
+/// The Lock Screen with the live match (and its scoring buttons), the Lock Screen widgets and the Home
+/// Screen widgets, for the App Store screenshot. The real widgets draw the same views.
 struct WidgetShowcase: View {
     @Environment(Ledger.self) private var ledger
     var body: some View {
@@ -353,21 +354,30 @@ struct WidgetShowcase: View {
         let s = ScoreState.replay(Array((m?.points ?? []).prefix(max(0, (m?.points.count ?? 0) - 9))), m?.scoring ?? f)
         ZStack {
             LinearGradient(colors: [Color(red: 0.10, green: 0.12, blue: 0.20), Color(red: 0.05, green: 0.05, blue: 0.08), Gold.ink], startPoint: .top, endPoint: .bottom).ignoresSafeArea()
-            VStack(spacing: 22) {
+            VStack(spacing: 20) {
                 VStack(spacing: 2) {
                     Text(Date.now.formatted(.dateTime.weekday(.wide).month(.wide).day())).font(.body(17, .semibold)).foregroundStyle(.white.opacity(0.8))
                     Text("9:41").font(.system(size: 84, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.92))
-                }.padding(.top, 50)
+                }.padding(.top, 40)
+                HStack(spacing: 14) {
+                    WeekRingAccessory(g: g).frame(width: 64, height: 64)
+                        .background(Circle().fill(.white.opacity(0.12)))
+                    RecordAccessory(g: g).padding(.horizontal, 12).frame(width: 210, height: 64)
+                        .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(.white.opacity(0.12)))
+                }
+                .foregroundStyle(.white.opacity(0.92))
                 MatchLiveView(opponent: m?.opponent ?? "Chris Maddox", s: MatchLive.state(s, m?.scoring ?? f))
                     .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Gold.ink.opacity(0.92)))
                     .padding(.horizontal, 14)
-                HStack(spacing: 22) {
+                HStack(spacing: 18) {
                     tile(RecordGlanceView(g: g), w: 170, h: 170)
-                    VStack(spacing: 14) {
-                        ForEach(0..<2, id: \.self) { _ in
-                            HStack(spacing: 14) { ForEach(0..<2, id: \.self) { _ in RoundedRectangle(cornerRadius: 16, style: .continuous).fill(.white.opacity(0.12)).frame(width: 64, height: 64) } }
-                        }
+                    VStack(alignment: .leading, spacing: 10) {
+                        Label("Score a Match", systemImage: "tennisball.fill")
+                        Label("Start Hitting", systemImage: "figure.tennis")
                     }
+                    .font(.body(14, .semibold)).foregroundStyle(.white.opacity(0.9))
+                    .padding(16).frame(width: 176, height: 170, alignment: .leading)
+                    .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(.white.opacity(0.12)))
                 }
                 tile(FormGlanceView(g: g), w: 364, h: 170)
                 Spacer()
