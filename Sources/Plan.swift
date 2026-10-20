@@ -28,7 +28,8 @@ struct WeekPlan {
 /// that are close in need rotates with the week number.
 @MainActor
 enum Planner {
-    static func make(_ l: Ledger, week: String = Extras.week) -> WeekPlan {
+    static func make(_ l: Ledger, week requested: String? = nil) -> WeekPlan {
+        let week = requested ?? Extras.week
         let since = Calendar.current.date(byAdding: .day, value: -60, to: .now) ?? .distantPast
         let recent = l.sessions.filter { $0.date >= since }
         let blocks = (recent.isEmpty ? l.sessions : recent).flatMap(\.blocks)
