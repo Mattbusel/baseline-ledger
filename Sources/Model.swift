@@ -80,18 +80,6 @@ struct PracticeSession: Codable, Identifiable, Hashable {
 enum Surface: String, Codable, CaseIterable { case hard = "Hard", clay = "Clay", grass = "Grass", indoor = "Indoor", carpet = "Carpet" }
 enum Format: String, Codable, CaseIterable { case singles = "Singles", doubles = "Doubles" }
 
-struct SetScore: Codable, Hashable, Identifiable {
-    var id = UUID()
-    var me: Int
-    var them: Int
-    var tiebreak: Int? = nil   // loser's tiebreak points, the way it's written
-    var text: String {
-        if let tiebreak { return "\(me)-\(them)(\(tiebreak))" }
-        return "\(me)-\(them)"
-    }
-    var won: Bool { me > them }
-}
-
 struct Match: Codable, Identifiable, Hashable {
     var id = UUID()
     var date = Date.now
@@ -124,12 +112,56 @@ struct Match: Codable, Identifiable, Hashable {
     var whatDidnt: String = ""
     var notes: String = ""
     var mood: Int = 3
+    /// 1.2: a match scored point by point on court. Empty for matches logged afterwards.
+    var points: [PointLog] = []
+    var scoring: LiveFormat? = nil
 
     var setsWon: Int { sets.filter(\.won).count }
     var setsLost: Int { sets.filter { $0.them > $0.me }.count }
     var won: Bool { setsWon > setsLost }
     var scoreline: String { sets.map(\.text).joined(separator: "  ") }
     var firstServePct: Double { pctValue(firstServesIn, firstServesTotal) }
+    var isLive: Bool { !points.isEmpty }
+}
+
+extension Match {
+    /// `points` and `scoring` arrived in 1.2. A synthesized decoder would throw on a 1.1 file that
+    /// lacks them and lose every match, so every field after the id is read if present.
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        self.init()
+        id = try c.decode(UUID.self, forKey: .id)
+        date = try c.decodeIfPresent(Date.self, forKey: .date) ?? date
+        opponent = try c.decodeIfPresent(String.self, forKey: .opponent) ?? ""
+        opponentLevel = try c.decodeIfPresent(String.self, forKey: .opponentLevel) ?? ""
+        event = try c.decodeIfPresent(String.self, forKey: .event) ?? ""
+        surface = (try? c.decodeIfPresent(Surface.self, forKey: .surface)) ?? .hard
+        format = (try? c.decodeIfPresent(Format.self, forKey: .format)) ?? .singles
+        sets = try c.decodeIfPresent([SetScore].self, forKey: .sets) ?? sets
+        retired = try c.decodeIfPresent(Bool.self, forKey: .retired) ?? false
+        aces = try c.decodeIfPresent(Int.self, forKey: .aces) ?? 0
+        doubleFaults = try c.decodeIfPresent(Int.self, forKey: .doubleFaults) ?? 0
+        firstServesIn = try c.decodeIfPresent(Int.self, forKey: .firstServesIn) ?? 0
+        firstServesTotal = try c.decodeIfPresent(Int.self, forKey: .firstServesTotal) ?? 0
+        firstServePointsWon = try c.decodeIfPresent(Int.self, forKey: .firstServePointsWon) ?? 0
+        secondServePointsWon = try c.decodeIfPresent(Int.self, forKey: .secondServePointsWon) ?? 0
+        secondServePointsPlayed = try c.decodeIfPresent(Int.self, forKey: .secondServePointsPlayed) ?? 0
+        breakPointsWon = try c.decodeIfPresent(Int.self, forKey: .breakPointsWon) ?? 0
+        breakPointChances = try c.decodeIfPresent(Int.self, forKey: .breakPointChances) ?? 0
+        breakPointsSaved = try c.decodeIfPresent(Int.self, forKey: .breakPointsSaved) ?? 0
+        breakPointsFaced = try c.decodeIfPresent(Int.self, forKey: .breakPointsFaced) ?? 0
+        winners = try c.decodeIfPresent(Int.self, forKey: .winners) ?? 0
+        unforcedErrors = try c.decodeIfPresent(Int.self, forKey: .unforcedErrors) ?? 0
+        netPointsWon = try c.decodeIfPresent(Int.self, forKey: .netPointsWon) ?? 0
+        netPointsPlayed = try c.decodeIfPresent(Int.self, forKey: .netPointsPlayed) ?? 0
+        gamePlan = try c.decodeIfPresent(String.self, forKey: .gamePlan) ?? ""
+        whatWorked = try c.decodeIfPresent(String.self, forKey: .whatWorked) ?? ""
+        whatDidnt = try c.decodeIfPresent(String.self, forKey: .whatDidnt) ?? ""
+        notes = try c.decodeIfPresent(String.self, forKey: .notes) ?? ""
+        mood = try c.decodeIfPresent(Int.self, forKey: .mood) ?? 3
+        points = (try? c.decodeIfPresent([PointLog].self, forKey: .points)) ?? []
+        scoring = try? c.decodeIfPresent(LiveFormat.self, forKey: .scoring)
+    }
 }
 
 // MARK: gear
@@ -172,9 +204,14 @@ final class Ledger {
     var racquets: [Racquet] = [] { didSet { save() } }
     var goals: [Goal] = [] { didSet { save() } }
     var name: String = "" { didSet { save() } }
+    /// Your notes on each opponent, keyed by their name in lower case.
+    var scouting: [String: String] = [:] { didSet { save() } }
+    /// Called after every save, so the widgets can be told.
+    @ObservationIgnored var didSave: (() -> Void)?
 
     private struct Snapshot: Codable {
         var sessions: [PracticeSession]; var matches: [Match]; var racquets: [Racquet]; var goals: [Goal]; var name: String
+        var scouting: [String: String]? = nil
     }
     private var loading = false
     private let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("ledger.json")
@@ -183,14 +220,32 @@ final class Ledger {
         loading = true
         if demo { Demo.fill(self) } else if let d = try? Data(contentsOf: url), let s = try? JSONDecoder().decode(Snapshot.self, from: d) {
             sessions = s.sessions; matches = s.matches; racquets = s.racquets; goals = s.goals; name = s.name
+            scouting = s.scouting ?? [:]
         }
         loading = false
     }
 
     private func save() {
         guard !loading else { return }
-        let snap = Snapshot(sessions: sessions, matches: matches, racquets: racquets, goals: goals, name: name)
+        let snap = Snapshot(sessions: sessions, matches: matches, racquets: racquets, goals: goals, name: name, scouting: scouting)
         if let d = try? JSONEncoder().encode(snap) { try? d.write(to: url, options: .atomic) }
+        didSave?()
+    }
+
+    /// The whole ledger as one file, for the iCloud backup.
+    func snapshotData() -> Data? {
+        try? JSONEncoder().encode(Snapshot(sessions: sessions, matches: matches, racquets: racquets, goals: goals, name: name, scouting: scouting))
+    }
+    /// Replaces the ledger with a backup. False if the data is not a ledger.
+    @discardableResult
+    func restore(snapshot data: Data) -> Bool {
+        guard let s = try? JSONDecoder().decode(Snapshot.self, from: data) else { return false }
+        loading = true
+        sessions = s.sessions; matches = s.matches; racquets = s.racquets; goals = s.goals; name = s.name
+        scouting = s.scouting ?? [:]
+        loading = false
+        save()
+        return true
     }
 
     func upsert(_ s: PracticeSession) {

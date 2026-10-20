@@ -1,0 +1,60 @@
+Baseline Ledger: marcador de tenis, diario de entrenamiento y estadísticas de partido, en negro y dorado.
+
+MARCADOR EN DIRECTO
+• Dos botones grandes: tu punto, su punto. Iguales, ventaja, tiebreaks, super tiebreak y punto de oro se cuentan solos
+• Falta para el segundo saque, o ace, ganador o error tuyo
+• % de primer saque, puntos con cada saque, puntos de break, ganadores y errores: todo se rellena solo
+• Desde la pantalla bloqueada: botones Ganado, Perdido y Falta, también en la Dynamic Island
+• Cada punto se guarda y se puede deshacer; termina el set después
+
+CARA A CARA
+• Tu balance, sets ganados y saque contra cada rival
+• Tus notas sobre cada jugador
+• Informes para la revancha: balance, saque y nervios, qué ha funcionado, plan de tres puntos
+
+ENTRENAMIENTO EN PISTA
+• Derecha, revés, saque, resto, volea, remate, cortado, dejada o juego de puntos
+• Cada bola: dentro, ganador, red, larga, ancha o de marco
+• Saques: dónde cae en el cuadro, lado de iguales o ventaja, primero o segundo
+• Contador de peloteo; deshaz cualquier toque
+• Diario: sesión, ánimo y energía; tu consigna, lo que salió bien, qué trabajar
+
+RETO DEL MES
+• Cada mes un reto nuevo: Saque, Peloteo, Partido y Presión
+• Tres objetivos que se cuentan solos y una medalla para tu vitrina
+
+WIDGETS, CONTROLES Y SIRI
+• Widget de balance para inicio, StandBy y pantalla bloqueada, con tiempo en pista
+• Widget de forma: últimos diez resultados, saque y vida del cordaje
+• Centro de control y botón de acción (iOS 18): Marcar un partido, Empezar a pelotear
+• Siri y Atajos (en inglés): "Score a match in Baseline Ledger", "What's my record in Baseline Ledger"
+
+BASELINE LEDGER PRO (compra única)
+• Momentum: cada partido marcado en directo, punto a punto
+• Clutch: balance en tiebreaks, sets decisivos y puntos de break
+• % de victorias por superficie, % de primer saque en el tiempo, ganadores vs. errores
+• Colocación del saque por lado, % en juego por golpe y cómo fallas
+• Todas tus raquetas, exportación a hoja de cálculo, widget de forma
+
+BASELINE LEDGER PLUS (suscripción)
+Todo lo de Pro, y además:
+• Cada semana, un plan creado en tu móvil con tus números: golpe más débil, fallo más común, primer saque, dobles faltas, puntos de break. Cuatro ejercicios con objetivos, cada uno a un toque
+• Puntos de presión de tus partidos en directo: saques mantenidos, breaks, 30 iguales, iguales, primeros puntos, puntos de juego y de tiebreak, y, en palabras claras, dónde se escapan los juegos ajustados
+• Todos los acabados de pista con la suscripción: Red Clay, Lawn, Hard Court y Night Session, cada uno con su icono
+• 10 informes de scouting y 10 pósteres al mes
+• Copia de seguridad y restauración en iCloud
+
+EXTRAS
+• Informes y pósteres de partido, en packs de tres
+• Acabados de pista: recolorean app y widgets, con icono a juego
+
+EQUIPO
+• Raquetas con cordaje, tensión y fecha de encordado; horas de cordaje y aviso para reencordar
+
+Gratis para siempre: entrenamientos, marcador en directo y en pantalla bloqueada, diario, partidos, cara a cara, reto del mes y una raqueta. ¿Ya has comprado Baseline Ledger o Pro? Sigue desbloqueado. Sin cuenta, sin anuncios, sin rastreo: todo se queda en tu móvil.
+
+TÉRMINOS DE LA SUSCRIPCIÓN
+Baseline Ledger Plus es una suscripción opcional con renovación automática, mensual o anual. El plan anual puede empezar con una prueba gratuita de una semana para nuevos suscriptores. El pago se carga a tu ID de Apple al confirmar la compra o al terminar la prueba gratuita. La suscripción se renueva automáticamente al mismo precio, salvo que desactives la renovación automática al menos 24 horas antes del final del periodo actual. Gestiónala o cancélala cuando quieras en los ajustes de suscripciones de tu ID de Apple. La parte no utilizada de una prueba gratuita se pierde al suscribirte.
+
+Términos de uso (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Política de privacidad: https://tensorust.com/apps/baseline-ledger/privacy/

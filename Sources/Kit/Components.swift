@@ -303,6 +303,7 @@ struct SheetHeader: View {
                     .frame(width: 36, height: 36).background(Circle().fill(Gold.lacquerHi))
                     .overlay(Circle().strokeBorder(Gold.hairline, lineWidth: 0.6))
             }
+            .accessibilityLabel("Close")
         }
         .padding(.horizontal, 20)
     }

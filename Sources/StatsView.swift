@@ -14,7 +14,10 @@ struct StatsView: View {
             }
             // The last-ten averages are free; the stat book below them is Pro.
             if !ledger.matches.isEmpty { matchAverages }
-            if pro.unlocked {
+            if ledger.matches.contains(where: \.isLive) || pro.plusActive {
+                if pro.plusActive { PressureCard() } else { PlusLock(reason: .pressure, line: "Pressure points come with Plus") { PressureCard() } }
+            }
+            if pro.has {
                 statBook
             } else {
                 LockedSection(reason: .stats, title: "The full stat book",
@@ -28,6 +31,7 @@ struct StatsView: View {
 
     @ViewBuilder private var statBook: some View {
         if !ledger.matches.isEmpty {
+            ClutchCard()
             firstServeTrend
             winnersVsErrors
             bySurface
@@ -267,5 +271,28 @@ struct StatsView: View {
             }
         }
         .card()
+    }
+}
+
+/// A Plus section for everyone else: their own numbers, frosted, with one way in.
+struct PlusLock<Content: View>: View {
+    @Environment(Pro.self) private var pro
+    let reason: Pro.Reason
+    let line: String
+    @ViewBuilder var content: Content
+    var body: some View {
+        content
+            .blur(radius: 7).allowsHitTesting(false).accessibilityHidden(true)
+            .overlay {
+                Button { pro.ask(reason) } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "lock.fill").font(.body(13, .bold))
+                        Text(line).font(.body(14, .semibold))
+                    }
+                    .foregroundStyle(Gold.ink).padding(.horizontal, 16).frame(height: 44).background(Capsule().fill(Gold.foil))
+                    .shadow(color: .black.opacity(0.5), radius: 12, y: 6)
+                }
+                .buttonStyle(PressStyle())
+            }
     }
 }

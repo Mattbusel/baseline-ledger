@@ -7,6 +7,8 @@ import SwiftUI
 final class Autopilot {
     static let shared = Autopilot()
     static var on: Bool { ProcessInfo.processInfo.arguments.contains("-demoAutoplay") }
+    /// The App Store preview video: about 25 seconds through what is new, on the sample ledger.
+    static var preview: Bool { ProcessInfo.processInfo.arguments.contains("-demoPreview") }
 
     private(set) var tick = 0
     private(set) var cue = ""
@@ -18,6 +20,53 @@ final class Autopilot {
     }
 
     @MainActor private func wait(_ s: Double) async { try? await Task.sleep(for: .seconds(s)) }
+
+    @MainActor
+    func runPreview(_ router: Router, _ l: Ledger) {
+        guard Autopilot.preview, !running else { return }
+        running = true
+        Task { @MainActor in
+            await wait(2.0)
+            // Score a few points live.
+            if var m = l.matches.first(where: { $0.isLive }) {
+                m.id = UUID(); m.points = Array(m.points.prefix(m.points.count - 12)); router.scoring = m
+            }
+            await wait(1.6)
+            for c in ["score.won", "score.ace", "score.lost", "score.winner", "score.won", "score.error", "score.won"] { await send(c, then: 0.75) }
+            await wait(1.0)
+            router.scoring = nil
+            await wait(0.8)
+            // The Lock Screen: the live score with its buttons, and the widgets.
+            withAnimation { router.showcase = true }
+            await wait(3.4)
+            withAnimation { router.showcase = false }
+            await wait(0.6)
+            // This week's plan.
+            router.plan = true
+            await wait(3.4)
+            router.plan = false
+            await wait(0.8)
+            // Pressure points and the stat book.
+            withAnimation { router.tab = .stats }
+            await wait(3.0)
+            // Scout the rematch.
+            withAnimation { router.tab = .matches }
+            await wait(1.0)
+            if let o = l.opponents.first { router.scout = Scout.make(l, opponent: o) }
+            await wait(3.0)
+            router.scout = nil
+            await wait(0.8)
+            // The monthly challenge.
+            withAnimation { router.tab = .home }
+            await wait(1.2)
+            router.challenge = true
+            await wait(3.0)
+            router.challenge = false
+            await wait(1.0)
+            let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            try? Data().write(to: docs.appendingPathComponent("demo_done"))
+        }
+    }
 
     @MainActor
     func run(_ router: Router) {

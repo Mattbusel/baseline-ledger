@@ -1,0 +1,1 @@
+marcador,pontuação,partida,treino,saque,raquete,encordoamento,clube,ranking,duplas,tiebreak,diário

@@ -1,41 +1,60 @@
-Baseline Ledger is a tennis practice journal and match stat book, finished in black and gold. Free to download, free to log, with one optional Pro unlock.
+Baseline Ledger is a tennis scorekeeper, practice journal and match stat book in black and gold. Score live, track every opponent, chart your serves and see what to work on.
 
-Track your hitting sessions shot by shot, chart where your serves land, keep a proper record of every match, and let the numbers tell you what to work on.
+SCORE IT LIVE
+• Two big buttons: your point, their point. Deuce and ad, tiebreaks, 10-point match tiebreaks and no-ad all count themselves
+• Tap Fault for a second serve, or tag an ace, a winner or your error
+• First serve %, points won behind each serve, break points won and saved, winners and errors fill in as you go
+• Lock Screen scoring: Won, Lost and Fault buttons on the live score and in the Dynamic Island
+• Saves every point: close the app mid-set, finish later. Undo any point
 
-ON COURT
+HEAD TO HEAD
+• Your record, sets won and serve against everyone you've played
+• Your scouting notes on each player
+• Rematch scouting reports: your record, how your serve and nerve hold up, what has worked, and a three-point plan
+
+ON COURT PRACTICE
 • Forehand, backhand, serve, return, volley, overhead, slice, drop shot or point play
-• Pick a pattern: crosscourt, down the line, inside-out, inside-in, deep middle, live ball, basket feed
-• Tap each ball: in, winner, or error into the net, long, wide or off the frame
-• Rally counter: tap each shot, see your longest rally
-• Serves: tap where the ball landed in the service box (wide, body or T) on the deuce or ad side, first or second serve; log aces and faults
-• Undo any tap
+• Tap each ball: in, winner, or into the net, long, wide or off the frame
+• Serves: tap where each lands in the box, deuce or ad side, first or second
+• Rally counter; undo any tap
+• Journal: rate the session, mood and energy; your cue, what clicked, what to work on
 
-YOUR JOURNAL
-• Rate the session, your mood and energy
-• Hitting partner, cue, what clicked, what to work on, and free notes
-• Search every entry, filter by stroke
+MONTHLY CHALLENGE
+• A new challenge every month: Serve, Rally, Match and Pressure
+• Three self-counting targets and a medal for your cabinet
 
-MATCHES
-• Set scores with tiebreaks, opponent and their level, event, surface, singles or doubles
-• First serve %, points won on first and second serve, aces and double faults
-• Break points won and saved, winners vs unforced errors, net points
-• Game plan, what worked and what didn't
+WIDGETS, CONTROLS AND SIRI
+• Record widget for the Home Screen, StandBy and Lock Screen, with court time
+• Form widget: last ten results, serve numbers and string life
+• Control Center and Action button (iOS 18): Score a Match, Start Hitting
+• Siri and Shortcuts: "Score a match in Baseline Ledger", "What's my record in Baseline Ledger"
 
-STATS
-• First serve %, serve points won, break points and double faults over your last ten matches
+BASELINE LEDGER PRO (one-time purchase)
+• Momentum: the swing of every live-scored match, point by point
+• Clutch: tiebreak, deciding-set and break point record
+• Win rate by surface, first serve % over time, winners vs errors
+• Serve placement on each side, in-play % by stroke and how you miss
+• Every racquet you carry, spreadsheet export and the Form widget
 
-BASELINE LEDGER PRO (one-time purchase, no subscription)
-• Win rate by surface
-• First serve % over time, winners vs errors per match
-• Where your serves land on each side
-• In-play % by stroke and how you tend to miss, with advice
-• Where your court time goes
-• Track as many racquets as you carry (one is free)
-• Export your matches and practice sessions as spreadsheet files
+BASELINE LEDGER PLUS (subscription)
+Everything in Pro, plus:
+• A new practice plan every week, built on your phone from your weakest stroke, most common miss, first serve, double faults and break points. Four drills with targets, one tap to start each
+• Pressure points from every live-scored match: holds, breaks, 30-all, deuce, first, game and tiebreak points, with a plain-English read on where close games slip
+• Every court finish while subscribed: Red Clay, Lawn, Hard Court and Night Session, each with its own app icon
+• 10 scouting reports and 10 match posters a month
+• iCloud backup and restore
+
+EXTRAS
+• Scouting Reports and Match Posters, in packs of three
+• Court finishes that recolour the app and widgets, with a matching icon
 
 GEAR
-• Racquets with string, tension and date strung
-• Hours on the current strings, added automatically from your sessions, and a nudge when it's time to restring
-• String log history
+• Racquets with string, tension and date strung; string hours added from your sessions, and a nudge to restring
 
-Goals, a weekly court-time target and streaks keep you honest. Practice logging, the journal, match logging and one racquet are free forever. Pro is one payment, never a subscription, and Family Sharing works. No account, no ads, no tracking: everything stays on your phone.
+Free forever: practice logging, live and Lock Screen scoring, the journal, match logging, head to head, the monthly challenge and one racquet. Already bought Baseline Ledger or Pro? It stays unlocked. No account, no ads, no tracking: everything stays on your phone.
+
+SUBSCRIPTION TERMS
+Baseline Ledger Plus is an optional auto-renewable subscription, monthly or yearly. The yearly plan may start with a free one-week trial for new subscribers. Payment is charged to your Apple ID at confirmation of purchase, or when the free trial ends. The subscription renews automatically at the same price unless auto-renew is turned off at least 24 hours before the end of the current period. Manage or cancel it any time in your Apple ID's subscription settings. Any unused part of a free trial is forfeited when you subscribe.
+
+Terms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Privacy Policy: https://tensorust.com/apps/baseline-ledger/privacy/

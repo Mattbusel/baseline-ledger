@@ -1,0 +1,13 @@
+Das bisher größte Update von Baseline Ledger.
+
+• Live zählen: Tippe, wer jeden Punkt gewonnen hat, und Spielstand, Aufschlagwerte und Breakbälle füllen sich selbst aus. Mit Tiebreaks, Match-Tiebreaks und No-Ad
+• Zählen vom Sperrbildschirm: Tasten für Gewonnen, Verloren und Fehlaufschlag im Live-Spielstand, auch in der Dynamic Island
+• Ein laufendes Match wird nach jedem Punkt gespeichert, beim Schließen der App geht also nichts verloren
+• Direkter Vergleich: deine Bilanz gegen jeden Gegner, mit deinen eigenen Scouting-Notizen
+• Scouting-Berichte vor dem Rückspiel und Match-Poster zum Teilen
+• Monatliche Challenge: Aufschlag, Ballwechsel, Match und Druck, mit Medaillen
+• Widgets für den Sperrbildschirm, dazu Tasten im Kontrollzentrum und Siri: "Score a match in Baseline Ledger"
+• Neu: Baseline Ledger Plus, mit jeder Woche einem neuen Trainingsplan aus deinen eigenen Zahlen, Druckpunkten (Aufschlagspiele halten, Breaks, Einstandspunkte), allen Platzdesigns, 10 Berichten und Postern pro Monat und iCloud-Sicherung
+• Platzdesigns: Red Clay, Lawn, Hard Court und Night Session, jeweils mit passendem App-Symbol
+
+Alles, was du erfasst hast, bleibt erhalten, und Pro gehört weiter dir.

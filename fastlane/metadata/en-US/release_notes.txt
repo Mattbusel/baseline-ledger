@@ -1,5 +1,13 @@
-Baseline Ledger is now free.
+The biggest Baseline Ledger update yet.
 
-• Practice logging, the journal, match logging, goals and one racquet with its string history are free forever
-• Baseline Ledger Pro is a one-time unlock: the full stat book (serve trends, winners vs errors, results by surface, serve placement, stroke read), every racquet you carry, and a new spreadsheet export of your matches and sessions
-• Already bought Baseline Ledger? Pro is unlocked for you automatically. If it is not, tap Restore on the Pro card at the bottom of the Home tab.
+• Score it live: tap who won each point and the score, serve numbers and break points fill themselves in. Tiebreaks, match tiebreaks and no-ad included
+• Score from your Lock Screen: Won, Lost and Fault buttons on the live score, in the Dynamic Island too
+• A match in progress is saved after every point, so closing the app never loses it
+• Head to head: your record against everyone you play, with your own scouting notes
+• Scouting reports before a rematch, and match posters to share
+• Monthly challenge: Serve, Rally, Match and Pressure, with medals
+• Lock Screen widgets, plus Control Center buttons and Siri: "Score a match in Baseline Ledger"
+• New: Baseline Ledger Plus, with a new practice plan every week built from your own numbers, pressure points (hold, break, deuce points), every court finish, 10 reports and posters a month and iCloud backup
+• Court finishes: Red Clay, Lawn, Hard Court and Night Session, each with a matching app icon
+
+Everything you've logged carries over, and Pro stays yours.

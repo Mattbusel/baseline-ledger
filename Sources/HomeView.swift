@@ -1,9 +1,11 @@
 import SwiftUI
+import TipKit
 
 struct HomeView: View {
     @Environment(Ledger.self) private var ledger
     @Environment(Router.self) private var router
     @State private var newGoal = ""
+    @State private var draft = LiveDraft.load()
     @AppStorage("weeklyTarget") private var weeklyTarget = 300
 
     var body: some View {
@@ -12,16 +14,51 @@ struct HomeView: View {
             hero
             HStack(spacing: 12) {
                 FoilButton("Start hitting", icon: "play.fill") { router.live = PracticeSession() }
-                GhostButton("Log match", icon: "trophy.fill") { router.editingMatch = Match() }
-                    .frame(width: 142)
+                GhostButton("Score match", icon: "tennisball.fill") { router.open(.score) }
+                    .frame(width: 150)
+                    .popoverTip(ScoreLiveTip(), arrowEdge: .top)
             }
+            if let d = draft, router.scoring == nil, !Shots.on { resumeCard(d) }
+            ChallengeCard()
+            PlanCard()
             if let r = ledger.racquets.first, r.freshness < 0.25 { restringNudge(r) }
             if let last = ledger.sessions.first { lastSession(last) }
-            goals
             if !ledger.matches.isEmpty { recentMatches }
+            goals
             if ledger.sessions.isEmpty && ledger.matches.isEmpty { emptyState }
-            ProCard()
+            if !Shots.on {
+                MembershipCard()
+                ExtrasCard()
+            }
         }
+        .onAppear { refresh() }
+        .onChange(of: router.scoring) { _, _ in refresh() }
+        .onReceive(NotificationCenter.default.publisher(for: LiveDraft.changed)) { _ in refresh() }
+    }
+
+    private func refresh() {
+        draft = LiveDraft.load()
+        if Challenges.record(Challenges.current(ledger)) { Haptic.done(); router.happyMoment() }
+    }
+
+    private func resumeCard(_ d: LiveDraft) -> some View {
+        let s = d.score
+        return Button { router.resume(d) } label: {
+            HStack(spacing: 14) {
+                Image(systemName: "dot.radiowaves.left.and.right").font(.body(16, .bold)).foregroundStyle(Gold.ink)
+                    .frame(width: 42, height: 42).background(Circle().fill(Gold.foil))
+                    .symbolEffect(.pulse)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(s.over ? "Match finished, not saved" : "Match in progress").font(.display(17, .medium)).foregroundStyle(Gold.ivory)
+                    Text((d.opponent.isEmpty ? "" : "vs \(d.opponent) · ") + s.sets.map { "\($0.me)-\($0.them)" }.joined(separator: " "))
+                        .font(.body(12.5)).foregroundStyle(Gold.muted).lineLimit(1)
+                }
+                Spacer()
+                Text(s.over ? "Save" : "Resume").font(.body(13, .bold)).foil()
+            }
+            .card(padding: 14, radius: 20)
+        }
+        .buttonStyle(PressStyle())
     }
 
     private var greeting: String {
@@ -220,6 +257,31 @@ struct HomeView: View {
                 .font(.body(14)).foregroundStyle(Gold.muted).multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity).card(padding: 26)
+    }
+}
+
+/// The way into the 99-cent corner.
+struct ExtrasCard: View {
+    @Environment(Router.self) private var router
+    var body: some View {
+        Button { router.shop = true } label: {
+            HStack(spacing: 14) {
+                HStack(spacing: -10) {
+                    ForEach(Court.all.prefix(4)) { c in
+                        Circle().fill(LinearGradient(colors: c.band, startPoint: .topLeading, endPoint: .bottomTrailing)).frame(width: 24, height: 24)
+                            .overlay(Circle().strokeBorder(Gold.ink, lineWidth: 2))
+                    }
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Extras").font(.display(17, .medium)).foregroundStyle(Gold.ivory)
+                    Text("Scouting reports, match posters, court finishes. 99¢ each.").font(.body(12)).foregroundStyle(Gold.muted).lineLimit(2)
+                }
+                Spacer()
+                Image(systemName: "chevron.right").font(.body(12, .bold)).foregroundStyle(Gold.muted)
+            }
+            .card(padding: 14)
+        }
+        .buttonStyle(PressStyle())
     }
 }
 

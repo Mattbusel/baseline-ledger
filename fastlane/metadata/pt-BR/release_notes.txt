@@ -1,0 +1,13 @@
+A maior atualização do Baseline Ledger até agora.
+
+• Placar ao vivo: toque em quem ganhou cada ponto, e o placar, os números de saque e os break points se preenchem sozinhos. Tiebreaks, match tiebreaks e sem vantagem incluídos
+• Placar pela Tela Bloqueada: botões Ganhei, Perdi e Falta no placar ao vivo, também na Dynamic Island
+• Uma partida em andamento é salva a cada ponto, então fechar o app nunca a perde
+• Confronto direto: seu retrospecto contra cada rival, com suas próprias anotações de scouting
+• Relatórios de scouting antes de uma revanche e pôsteres de partida para compartilhar
+• Desafio do mês: Saque, Rali, Partida e Pressão, com medalhas
+• Widgets para a Tela Bloqueada, além de botões na Central de Controle e Siri: "Score a match in Baseline Ledger"
+• Novo: Baseline Ledger Plus, com um plano de treino novo toda semana feito com os seus números, pontos de pressão (confirmar o saque, quebrar, pontos em iguais), todos os acabamentos de quadra, 10 relatórios e pôsteres por mês e backup no iCloud
+• Acabamentos de quadra: Red Clay, Lawn, Hard Court e Night Session, cada um com um ícone combinando
+
+Tudo o que você registrou continua aqui, e o Pro continua sendo seu.
